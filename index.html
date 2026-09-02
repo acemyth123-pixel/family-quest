@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Family Quest v0.15</title>
+<link rel="stylesheet" href="styles.v0200.css">
+</head>
+<body>
+
+<div id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand"><div class="brand-mark">FQ</div><div><h1>Family Quest</h1><p>Real Account Setup · Build 0.20.0</p></div></div>
+    <div id="authMessage" class="auth-message">Loading your account…</div>
+
+    <div id="authSignedOut" hidden>
+      <div class="auth-tabs">
+        <button type="button" class="primary" data-auth-tab="signin">Sign In</button>
+        <button type="button" class="ghost" data-auth-tab="signup">Create Account</button>
+      </div>
+      <form id="signInForm" class="auth-form">
+        <label>Email<input id="signInEmail" type="email" autocomplete="email" required></label>
+        <label>Password<input id="signInPassword" type="password" autocomplete="current-password" required></label>
+        <button class="primary" type="submit">Sign In</button>
+      </form>
+      <form id="signUpForm" class="auth-form" hidden>
+        <label>Email<input id="signUpEmail" type="email" autocomplete="email" required></label>
+        <label>Password<input id="signUpPassword" type="password" autocomplete="new-password" minlength="6" required></label>
+        <label>Confirm Password<input id="signUpPassword2" type="password" autocomplete="new-password" minlength="6" required></label>
+        <button class="primary" type="submit">Create Account</button>
+        <p class="muted">You will choose Create Family or Join Family after your account is created.</p>
+      </form>
+    </div>
+
+    <div id="authNoFamily" hidden>
+      <h2>Welcome to Family Quest</h2>
+      <p class="muted">Your account is ready. Create the household if you are the first person, or join one with its invite code.</p>
+      <div class="grid two auth-choice-grid">
+        <form id="createFamilyForm" class="card auth-form">
+          <h3>🏠 Create Family</h3>
+          <label>Your Display Name<input id="createDisplayName" maxlength="40" required></label>
+          <label>Family Name<input id="createHouseholdName" maxlength="60" placeholder="The Smith Family" required></label>
+          <button class="primary" type="submit">Create Family</button>
+          <p class="muted">The first account becomes an Admin.</p>
+        </form>
+        <form id="joinFamilyForm" class="card auth-form">
+          <h3>🎟️ Join Family</h3>
+          <label>Your Display Name<input id="joinDisplayName" maxlength="40" required></label>
+          <label>Invite Code<input id="joinInviteCode" maxlength="20" placeholder="FQ-1234ABCD" required></label>
+          <button class="primary" type="submit">Request to Join</button>
+          <p class="muted">An Admin must approve you before Family Quest opens.</p>
+        </form>
+      </div>
+      <button class="ghost" type="button" data-auth-action="signout">Sign Out</button>
+    </div>
+
+    <div id="authPending" hidden>
+      <div class="pending-orb">⏳</div>
+      <h2>Waiting for Admin Approval</h2>
+      <p id="pendingText" class="muted">Your request has been sent.</p>
+      <div class="action-row auth-center">
+        <button class="primary" type="button" data-auth-action="refresh">Check Again</button>
+        <button class="ghost" type="button" data-auth-action="signout">Sign Out</button>
+      </div>
+    </div>
+
+    <div id="authRejected" hidden>
+      <div class="pending-orb">🚫</div>
+      <h2>Join Request Not Approved</h2>
+      <p class="muted">You can sign out and use another account, or request to join a family again.</p>
+      <div class="action-row auth-center">
+        <button class="primary" type="button" data-auth-action="retry-join">Join Another Family</button>
+        <button class="ghost" type="button" data-auth-action="signout">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app-shell" id="appShell" hidden>
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">FQ</div><div><h1>Family Quest</h1><p>Season 2026 · Build 0.20.0</p></div></div>
+  <div class="profile-card compact"><div class="avatar" id="sidebarAvatar">A</div><div><strong id="sidebarName">Adam</strong><span id="sidebarRole">Admin Parent</span></div></div>
+  <nav id="nav">
+    <button data-view="home" class="active">🏠 Home</button>
+    <button data-view="chores">⚔️ Quests</button>
+    <button data-view="rewards">🎁 Rewards</button>
+    <button data-view="cosmetics">🎨 Sprite Shop</button>
+    <button data-view="groceries">🛒 Groceries</button>
+    <button data-view="calendar">📅 Calendar</button>
+    <button data-view="requests">📨 Family Requests</button>
+    <button data-view="achievements">🏆 Achievements</button>
+    <button data-view="profiles">👥 Profiles</button>
+    <button data-view="notifications">🔔 Notifications <span id="navNotifBadge"></span></button>
+    <button data-view="admin" id="adminNav">🛡️ Admin</button>
+  </nav>
+  <button class="ghost sidebar-signout" type="button" data-auth-action="signout">↪ Sign Out</button>
+</aside>
+<main>
+<header class="topbar"><div><p class="eyebrow" id="viewEyebrow"></p><h2 id="viewTitle"></h2></div><div class="top-actions"><button class="ghost" data-action="test-achievement">Test Achievement</button><button class="primary" data-action="quick-open">+ Quick Add</button></div></header>
+<section id="view"></section>
+</main>
+</div>
+<div id="toast" class="toast"></div>
+<div id="achievementPopup" class="achievement-popup"><div class="achievement-icon">🏆</div><div><small>ACHIEVEMENT UNLOCKED</small><strong id="achievementTitle"></strong><span id="achievementDesc"></span></div></div>
+<div id="celebration" class="celebration"></div>
+
+<dialog id="quickDialog"><form id="quickForm"><h3>Quick Add</h3><label>Type<select id="quickType"><option value="grocery">Grocery Item</option><option value="request">Family Request</option><option value="calendar">Calendar Event</option></select></label><label>Title<input id="quickTitle" required></label><div id="quickDynamic"></div><label>Notes<textarea id="quickNotes"></textarea></label><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="quickDialog">Cancel</button><button type="submit" class="primary">Add</button></div></form></dialog>
+
+<dialog id="choreDialog"><form method="dialog"><h3 id="choreDialogTitle"></h3><div id="choreDialogBody"></div><div class="dialog-actions"><button value="cancel" class="ghost">Close</button></div></form></dialog>
+
+<dialog id="dayDialog"><form method="dialog"><h3 id="dayDialogTitle"></h3><div id="dayDialogBody"></div><div class="dialog-actions"><button value="cancel" class="ghost">Close</button></div></form></dialog>
+
+<dialog id="rewardDialog"><form id="rewardForm"><h3 id="rewardDialogTitle"></h3><div id="rewardDialogBody"></div><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="rewardDialog">Cancel</button><button type="submit" class="primary">Submit Request</button></div></form></dialog>
+
+<dialog id="adminEditor"><form id="adminEditorForm"><h3 id="adminEditorTitle"></h3><div id="adminEditorBody"></div><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="adminEditor">Cancel</button><button type="submit" class="primary">Save</button></div></form></dialog>
+
+
+<dialog id="userDialog">
+ <form id="userForm">
+  <h3 id="userDialogTitle">Add User</h3>
+  <input type="hidden" id="userId">
+  <label>Display Name<input id="userName" required maxlength="40"></label>
+  <label>Role<select id="userRole"><option>Family Member</option><option>Admin Parent</option></select></label>
+  <label>Starting Sprite<select id="userSprite"></select></label>
+  <div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="userDialog">Cancel</button><button type="submit" class="primary">Save User</button></div>
+ </form>
+</dialog>
+
+<dialog id="seasonDialog">
+ <form id="seasonForm">
+  <h3 id="seasonDialogTitle">Season Reset</h3>
+  <div id="seasonDialogBody"></div>
+  <div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="seasonDialog">Cancel</button><button type="submit" class="primary" id="seasonConfirmButton">Confirm</button></div>
+ </form>
+</dialog>
+
+<dialog id="cosmeticPriceDialog">
+  <form method="dialog" id="cosmeticPriceForm" class="dialog-card">
+    <div class="dialog-head">
+      <div>
+        <div class="kicker">ADMIN · SPRITE SHOP</div>
+        <h3 id="cosmeticPriceTitle">Set Sprite Price</h3>
+      </div>
+      <button type="button" class="ghost" data-action="dialog-close" data-dialog="cosmeticPriceDialog">Close</button>
+    </div>
+    <input type="hidden" id="cosmeticPriceId">
+    <label>RP Price
+      <input id="cosmeticPriceValue" type="number" min="0" step="1" required>
+    </label>
+    <div class="action-row">
+      <button type="button" class="ghost" data-action="dialog-close" data-dialog="cosmeticPriceDialog">Cancel</button>
+      <button type="submit" class="primary">Save Price</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="profileDialog"><form id="profileForm"><h3>Customize Profile</h3><p class="muted">Choose any sprite you have unlocked. Achievement and Sprite Shop cosmetics are permanent once unlocked.</p><input type="hidden" id="profileAvatarId"><div id="spritePicker" class="sprite-picker"></div><label>Profile Title<input id="profileTitle" placeholder="Questmaster"></label><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="profileDialog">Cancel</button><button type="submit" class="primary">Save Profile</button></div></form></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js"></script>
+<script src="auth.v0200.js"></script>
+<script src="app.v0200.js"></script>
+</body></html>
