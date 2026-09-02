@@ -182,3 +182,11 @@ v0.20.0 — PHONE / TOUCH HARDENING
 - Week calendar remains horizontally scrollable.
 - Dialogs use phone-safe width/max-height and 16px inputs to avoid mobile zoom.
 - Added overflow/long-text protection and smaller phone spacing.
+
+v0.20.1 — PHONE TEST FIXES
+- Removed Test Achievement from the production header.
+- Removed persistent sidebar Sign Out; signed-in Sign Out now lives under Admin > Account.
+- Preserves XP/RP/streak/lifetime values when the real household member list reloads.
+- Home/Rewards/Sprite Shop/Profiles refresh identity when entered so RP does not show stale zero values.
+- Reward buttons have a dedicated touch-safe click listener; lottery/request flow no longer depends solely on the shared action dispatcher.
+- Added Clear Inbox with confirmation and real Supabase deletion via clear_my_notifications().

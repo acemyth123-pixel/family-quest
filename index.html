@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Family Quest v0.15</title>
-<link rel="stylesheet" href="styles.v0200.css">
+<link rel="stylesheet" href="styles.v0201.css">
 </head>
 <body>
 
 <div id="authGate" class="auth-gate">
   <div class="auth-card">
-    <div class="auth-brand"><div class="brand-mark">FQ</div><div><h1>Family Quest</h1><p>Real Account Setup · Build 0.20.0</p></div></div>
+    <div class="auth-brand"><div class="brand-mark">FQ</div><div><h1>Family Quest</h1><p>Real Account Setup · Build 0.20.1</p></div></div>
     <div id="authMessage" class="auth-message">Loading your account…</div>
 
     <div id="authSignedOut" hidden>
@@ -78,7 +78,7 @@
 
 <div class="app-shell" id="appShell" hidden>
 <aside class="sidebar">
-  <div class="brand"><div class="brand-mark">FQ</div><div><h1>Family Quest</h1><p>Season 2026 · Build 0.20.0</p></div></div>
+  <div class="brand"><div class="brand-mark">FQ</div><div><h1>Family Quest</h1><p>Season 2026 · Build 0.20.1</p></div></div>
   <div class="profile-card compact"><div class="avatar" id="sidebarAvatar">A</div><div><strong id="sidebarName">Adam</strong><span id="sidebarRole">Admin Parent</span></div></div>
   <nav id="nav">
     <button data-view="home" class="active">🏠 Home</button>
@@ -93,10 +93,10 @@
     <button data-view="notifications">🔔 Notifications <span id="navNotifBadge"></span></button>
     <button data-view="admin" id="adminNav">🛡️ Admin</button>
   </nav>
-  <button class="ghost sidebar-signout" type="button" data-auth-action="signout">↪ Sign Out</button>
+  
 </aside>
 <main>
-<header class="topbar"><div><p class="eyebrow" id="viewEyebrow"></p><h2 id="viewTitle"></h2></div><div class="top-actions"><button class="ghost" data-action="test-achievement">Test Achievement</button><button class="primary" data-action="quick-open">+ Quick Add</button></div></header>
+<header class="topbar"><div><p class="eyebrow" id="viewEyebrow"></p><h2 id="viewTitle"></h2></div><div class="top-actions"><button class="primary" data-action="quick-open">+ Quick Add</button></div></header>
 <section id="view"></section>
 </main>
 </div>
@@ -157,6 +157,6 @@
 <dialog id="profileDialog"><form id="profileForm"><h3>Customize Profile</h3><p class="muted">Choose any sprite you have unlocked. Achievement and Sprite Shop cosmetics are permanent once unlocked.</p><input type="hidden" id="profileAvatarId"><div id="spritePicker" class="sprite-picker"></div><label>Profile Title<input id="profileTitle" placeholder="Questmaster"></label><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="profileDialog">Cancel</button><button type="submit" class="primary">Save Profile</button></div></form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js"></script>
-<script src="auth.v0200.js"></script>
-<script src="app.v0200.js"></script>
+<script src="auth.v0201.js"></script>
+<script src="app.v0201.js"></script>
 </body></html>
