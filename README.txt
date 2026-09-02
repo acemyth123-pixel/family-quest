@@ -206,3 +206,10 @@ v0.20.3 — REWARD STATE / LOTTERY RESULT FIX
 - Rewards now distinguish Pending Approval from Used This Month.
 - Pending normal rewards show an explicit waiting note and button label.
 - Repeat clicks explain whether a reward is pending or already used instead of silently doing nothing.
+
+v0.20.4 — AUTHORITATIVE REWARD RESPONSE + NEW SPRITES
+- ZIP now extracts into one top-level Family_Quest_v0.20.4 folder.
+- Added 9 uploaded RP-shop sprite assets unchanged.
+- Added request_reward_v2 backend RPC: returns redemption status, details, current RP, XP and streak in the same successful request.
+- Lottery result and RP now update directly from that authoritative backend response; no page refresh should be required.
+- Background reward/notification refresh can no longer turn a successful lottery into a visible failure.
