@@ -213,3 +213,10 @@ v0.20.4 — AUTHORITATIVE REWARD RESPONSE + NEW SPRITES
 - Added request_reward_v2 backend RPC: returns redemption status, details, current RP, XP and streak in the same successful request.
 - Lottery result and RP now update directly from that authoritative backend response; no page refresh should be required.
 - Background reward/notification refresh can no longer turn a successful lottery into a visible failure.
+
+v0.20.5 — MOBILE REWARD SUBMISSION LOCKS
+- Normal reward Submit disables immediately and reads Submitting… while the request is in flight.
+- Reward dialog closes and clears its draft after a successful backend response.
+- Lottery has a 4-second client cooldown plus a matching backend cooldown to prevent button-mash duplicate tickets.
+- Lottery popup timer/confetti are generation-safe so rapid results cannot tear down a newer popup.
+- A successful reward RPC can no longer be relabeled as failed by a later render/display exception.
