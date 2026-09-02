@@ -190,3 +190,11 @@ v0.20.1 — PHONE TEST FIXES
 - Home/Rewards/Sprite Shop/Profiles refresh identity when entered so RP does not show stale zero values.
 - Reward buttons have a dedicated touch-safe click listener; lottery/request flow no longer depends solely on the shared action dispatcher.
 - Added Clear Inbox with confirmation and real Supabase deletion via clear_my_notifications().
+
+v0.20.2 — REWARD MOBILE FLOW + SIGN OUT
+- Sign Out moved to Profiles beside Customize Profile so every signed-in member can access it.
+- Added direct current-user season/lifetime stats reload; reward and sprite views refresh RP after member loading.
+- Lottery shows an immediate drawing message, then a visible result popup/toast after backend refresh.
+- Reward dialog Cancel has a dedicated direct click binding; Submit remains a direct form submit binding.
+- Reward submission reports whether it was auto-approved or sent for approval.
+- Backend migration admin_self_reward_autoapprove_v1: normal Admin self-requested rewards auto-approve through the existing review RPC; member requests remain pending.
