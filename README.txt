@@ -220,3 +220,9 @@ v0.20.5 — MOBILE REWARD SUBMISSION LOCKS
 - Lottery has a 4-second client cooldown plus a matching backend cooldown to prevent button-mash duplicate tickets.
 - Lottery popup timer/confetti are generation-safe so rapid results cannot tear down a newer popup.
 - A successful reward RPC can no longer be relabeled as failed by a later render/display exception.
+
+v0.20.6 — REWARD MODAL CLOSE HARDENING
+- After reward fields validate, the Submit Request modal closes immediately before the async backend request starts.
+- Added dialog.close() plus open-attribute fallback for mobile browser quirks.
+- Reward draft is cleared before the request/render cycle so a stale modal cannot linger.
+- Duplicate submission lock remains active while the backend call is running.
