@@ -198,3 +198,11 @@ v0.20.2 — REWARD MOBILE FLOW + SIGN OUT
 - Reward dialog Cancel has a dedicated direct click binding; Submit remains a direct form submit binding.
 - Reward submission reports whether it was auto-approved or sent for approval.
 - Backend migration admin_self_reward_autoapprove_v1: normal Admin self-requested rewards auto-approve through the existing review RPC; member requests remain pending.
+
+v0.20.3 — REWARD STATE / LOTTERY RESULT FIX
+- Confirmed backend lottery requests were succeeding even when frontend reported failure.
+- Reward post-submit refresh is now fault-tolerant: backend success is not relabeled as failure if a later UI refresh step fails.
+- Lottery result is fetched directly by returned redemption ID, then shown even if another loader has trouble.
+- Rewards now distinguish Pending Approval from Used This Month.
+- Pending normal rewards show an explicit waiting note and button label.
+- Repeat clicks explain whether a reward is pending or already used instead of silently doing nothing.
