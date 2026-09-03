@@ -244,3 +244,10 @@ v0.20.8 — PHONE PUSH / PWA
 - Calendar digest is generated once around 8 AM America/New_York when there are events that day.
 - Existing Family Quest Inbox remains the permanent notification history.
 - Uses Web Push + Supabase Edge Function; no paid push provider was added.
+
+
+v0.21.0
+- Home Open Quests, Notifications, and Admin Queue cards are quick navigation targets.
+- Grocery Shopping moved to Groceries: weekly shared List Ready check-in (+10 XP default), household ready count, Admin-only Grocery Run completion (+200 XP default), Admin weekly due-day/XP settings, and Admin-only item status changes. Everyone may still add grocery items.
+- Family Requests may optionally target a household member while remaining claimable by any other member; notifications call out the intended person.
+- Phone notification clicks now return to the GitHub Pages /family-quest/ app path instead of the domain root.
