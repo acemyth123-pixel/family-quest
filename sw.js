@@ -1,0 +1,15 @@
+const CACHE='family-quest-v0208';
+const CORE=['./','./index.html','./styles.v0208.css','./app.v0208.js','./auth.v0208.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting()});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;event.respondWith(fetch(event.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(event.request,copy)).catch(()=>{});return r}).catch(()=>caches.match(event.request).then(r=>r||caches.match('./index.html'))))});
+self.addEventListener('push',event=>{
+ let data={};try{data=event.data?event.data.json():{}}catch{data={body:event.data?.text()||''}}
+ const title=data.title||'Family Quest';
+ const options={body:data.body||'You have a Family Quest update.',icon:'./icon-192.png',badge:'./icon-192.png',tag:data.tag||'family-quest',renotify:false,data:{url:data.url||'./'}};
+ event.waitUntil(self.registration.showNotification(title,options));
+});
+self.addEventListener('notificationclick',event=>{
+ event.notification.close();const target=new URL(event.notification.data?.url||'./',self.location.origin).href;
+ event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{for(const c of list){if('focus'in c){c.navigate(target).catch(()=>{});return c.focus()}}return clients.openWindow(target)}));
+});

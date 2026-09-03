@@ -235,3 +235,12 @@ v0.20.7 — ADMIN OVERDUE CHORES
 - Send Reminder creates an Inbox notification for the assigned user.
 - Server-enforced 6-hour reminder cooldown per chore.
 - Designed so the same notification can later feed phone push notifications.
+
+v0.20.8 — PHONE PUSH / PWA
+- Family Quest is now installable as a PWA with manifest + service worker.
+- Profile has Enable Phone Notifications, Disable, and Send Test Notification controls.
+- Push scope: overdue chores, chore/reward approval results, Family Requests, and today's calendar digest.
+- Automatic overdue check runs every 15 minutes and only alerts once per overdue chore instance.
+- Calendar digest is generated once around 8 AM America/New_York when there are events that day.
+- Existing Family Quest Inbox remains the permanent notification history.
+- Uses Web Push + Supabase Edge Function; no paid push provider was added.
