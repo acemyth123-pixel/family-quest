@@ -1,0 +1,5 @@
+/* Family Quest v0.22.3 — free starter profile cosmetics */
+.frame-neon-quest-frame{border-color:#57d7ff;box-shadow:0 0 0 3px #6f53ff,0 0 26px #57d7ff88,inset 0 0 20px #7a65ff44}
+.frame-pixel-gold-frame{border-color:#ffd54a;box-shadow:0 0 0 3px #7f5a00,0 0 0 6px #2c2108,0 0 22px #ffd54a66,inset 0 0 18px #fff3a844}
+.bg-blue-dungeon-background{background:radial-gradient(circle at 50% 35%,#2d7dc655 0 8%,transparent 9%),repeating-linear-gradient(0deg,#102744 0 14px,#17375c 14px 28px)}
+.bg-purple-galaxy-background{background:radial-gradient(circle at 28% 26%,#ffffffbb 0 1.5%,transparent 2.2%),radial-gradient(circle at 72% 38%,#8fd8ff99 0 1.2%,transparent 2%),radial-gradient(circle at 48% 68%,#ff9fea88 0 1.4%,transparent 2%),radial-gradient(ellipse at center,#5b2f8b 0,#241746 46%,#0b0d19 100%)}
