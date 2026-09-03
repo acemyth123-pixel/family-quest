@@ -1,3 +1,6 @@
+Family Quest v0.21.4
+Mobile quick-card tap guard: scrolling across/releasing on a dashboard card no longer navigates. A deliberate tap with <=10px movement is required.
+
 Family Quest v0.18 — Sprite Shop Foundation
 
 Separate Sprite Shop using the same RP economy. Purchases are instant permanent cosmetic unlocks and do not require Admin approval. Achievement cosmetics remain earned-only. Existing cosmetic_unlocks inventory and profiles.selected_sprite_id are reused.
@@ -257,3 +260,9 @@ v0.21.2 hotfix:
 - Home dashboard stat cards now navigate using data-view-jump.
 - Added keyboard activation for clickable stat cards.
 - Bumped PWA cache/assets so the fix refreshes cleanly.
+
+
+v0.21.4 phone update hotfix:
+- Forces service-worker update checks with updateViaCache:none and a versioned SW URL.
+- Bumps all local frontend asset filenames/cache to v0213.
+- Adds a tiny visible v0.21.4 build badge for phone update verification.
