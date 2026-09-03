@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Family Quest v0.15</title>
 <link rel="stylesheet" href="styles.v0222.css">
+<link rel="stylesheet" href="starter.v0223.css">
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#10131a">
 <link rel="apple-touch-icon" href="./icon-192.png">
@@ -96,7 +97,6 @@
     <button data-view="notifications">🔔 Notifications <span id="navNotifBadge"></span></button>
     <button data-view="admin" id="adminNav">🛡️ Admin <span id="adminOverdueBadge"></span></button>
   </nav>
-  
 </aside>
 <main>
 <header class="topbar"><div><p class="eyebrow" id="viewEyebrow"></p><h2 id="viewTitle"></h2></div><div class="top-actions"><button class="primary" data-action="quick-open">+ Quick Add</button></div></header>
@@ -106,71 +106,17 @@
 <div id="toast" class="toast"></div>
 <div id="achievementPopup" class="achievement-popup"><div class="achievement-icon">🏆</div><div><small>ACHIEVEMENT UNLOCKED</small><strong id="achievementTitle"></strong><span id="achievementDesc"></span></div></div>
 <div id="celebration" class="celebration"></div>
-
 <dialog id="quickDialog"><form id="quickForm"><h3>Quick Add</h3><label>Type<select id="quickType"><option value="grocery">Grocery Item</option><option value="request">Family Request</option><option value="calendar">Calendar Event</option></select></label><label>Title<input id="quickTitle" required></label><div id="quickDynamic"></div><label>Notes<textarea id="quickNotes"></textarea></label><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="quickDialog">Cancel</button><button type="submit" class="primary">Add</button></div></form></dialog>
-
 <dialog id="choreDialog"><form method="dialog"><h3 id="choreDialogTitle"></h3><div id="choreDialogBody"></div><div class="dialog-actions"><button value="cancel" class="ghost">Close</button></div></form></dialog>
-
 <dialog id="dayDialog"><form method="dialog"><h3 id="dayDialogTitle"></h3><div id="dayDialogBody"></div><div class="dialog-actions"><button value="cancel" class="ghost">Close</button></div></form></dialog>
-
 <dialog id="rewardDialog"><form id="rewardForm"><h3 id="rewardDialogTitle"></h3><div id="rewardDialogBody"></div><div class="dialog-actions"><button type="button" class="ghost" id="rewardCancelButton">Cancel</button><button type="submit" class="primary" id="rewardSubmitButton">Submit Request</button></div></form></dialog>
-
 <dialog id="adminEditor"><form id="adminEditorForm"><h3 id="adminEditorTitle"></h3><div id="adminEditorBody"></div><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="adminEditor">Cancel</button><button type="submit" class="primary">Save</button></div></form></dialog>
-
-
-<dialog id="userDialog">
- <form id="userForm">
-  <h3 id="userDialogTitle">Add User</h3>
-  <input type="hidden" id="userId">
-  <label>Display Name<input id="userName" required maxlength="40"></label>
-  <label>Role<select id="userRole"><option>Family Member</option><option>Admin Parent</option></select></label>
-  <label>Starting Sprite<select id="userSprite"></select></label>
-  <div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="userDialog">Cancel</button><button type="submit" class="primary">Save User</button></div>
- </form>
-</dialog>
-
-<dialog id="seasonDialog">
- <form id="seasonForm">
-  <h3 id="seasonDialogTitle">Season Reset</h3>
-  <div id="seasonDialogBody"></div>
-  <div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="seasonDialog">Cancel</button><button type="submit" class="primary" id="seasonConfirmButton">Confirm</button></div>
- </form>
-</dialog>
-
-<dialog id="cosmeticPriceDialog">
-  <form method="dialog" id="cosmeticPriceForm" class="dialog-card">
-    <div class="dialog-head">
-      <div>
-        <div class="kicker">ADMIN · COSMETIC SHOP</div>
-        <h3 id="cosmeticPriceTitle">Set Cosmetic Price</h3>
-      </div>
-      <button type="button" class="ghost" data-action="dialog-close" data-dialog="cosmeticPriceDialog">Close</button>
-    </div>
-    <input type="hidden" id="cosmeticPriceId">
-    <label>RP Price
-      <input id="cosmeticPriceValue" type="number" min="0" step="1" required>
-    </label>
-    <div class="action-row">
-      <button type="button" class="ghost" data-action="dialog-close" data-dialog="cosmeticPriceDialog">Cancel</button>
-      <button type="submit" class="primary">Save Price</button>
-    </div>
-  </form>
-</dialog>
-
+<dialog id="userDialog"><form id="userForm"><h3 id="userDialogTitle">Add User</h3><input type="hidden" id="userId"><label>Display Name<input id="userName" required maxlength="40"></label><label>Role<select id="userRole"><option>Family Member</option><option>Admin Parent</option></select></label><label>Starting Sprite<select id="userSprite"></select></label><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="userDialog">Cancel</button><button type="submit" class="primary">Save User</button></div></form></dialog>
+<dialog id="seasonDialog"><form id="seasonForm"><h3 id="seasonDialogTitle">Season Reset</h3><div id="seasonDialogBody"></div><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="seasonDialog">Cancel</button><button type="submit" class="primary" id="seasonConfirmButton">Confirm</button></div></form></dialog>
+<dialog id="cosmeticPriceDialog"><form method="dialog" id="cosmeticPriceForm" class="dialog-card"><div class="dialog-head"><div><div class="kicker">ADMIN · COSMETIC SHOP</div><h3 id="cosmeticPriceTitle">Set Cosmetic Price</h3></div><button type="button" class="ghost" data-action="dialog-close" data-dialog="cosmeticPriceDialog">Close</button></div><input type="hidden" id="cosmeticPriceId"><label>RP Price<input id="cosmeticPriceValue" type="number" min="0" step="1" required></label><div class="action-row"><button type="button" class="ghost" data-action="dialog-close" data-dialog="cosmeticPriceDialog">Cancel</button><button type="submit" class="primary">Save Price</button></div></form></dialog>
 <dialog id="profileDialog"><form id="profileForm"><h3>Customize Profile</h3><p class="muted">Mix your unlocked avatar, frame, background and celebration confetti.</p><input type="hidden" id="profileAvatarId"><input type="hidden" id="profileConfettiId"><input type="hidden" id="profileFrameId"><input type="hidden" id="profileBackgroundId"><div id="profileCosmeticPreview" class="profile-cosmetic-preview"></div><div id="cosmeticPicker"></div><label>Profile Title<input id="profileTitle" placeholder="Questmaster"></label><div class="dialog-actions"><button type="button" class="ghost" data-action="dialog-close" data-dialog="profileDialog">Cancel</button><button type="submit" class="primary">Save Profile</button></div></form></dialog>
-
-<div id="buildBadge" class="build-badge" aria-label="Build version">v0.22.2</div>
-<script>
-(function(){
-  if(!('serviceWorker' in navigator)) return;
-  window.addEventListener('load', async ()=>{
-    try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=0221',{updateViaCache:'none'});
-      await reg.update();
-    }catch(e){ console.warn('Service worker update check failed',e); }
-  });
-})();
-</script>
+<div id="buildBadge" class="build-badge" aria-label="Build version">v0.22.3</div>
+<script>(function(){if(!('serviceWorker' in navigator))return;window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./sw.js?v=0223',{updateViaCache:'none'});await reg.update()}catch(e){console.warn('Service worker update check failed',e)}})})();</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js"></script>
 <script src="auth.v0222.js"></script>
 <script src="app.v0222.js"></script>
