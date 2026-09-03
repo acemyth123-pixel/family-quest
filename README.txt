@@ -1,3 +1,7 @@
+Family Quest v0.22.1 — Achievement + Cosmetic System Expansion
+
+v0.22.1 hotfix: web-optimized cosmetic assets for GitHub web upload and faster phone loading; no backend/schema changes from v0.22.0.
+
 Family Quest v0.21.4
 Mobile quick-card tap guard: scrolling across/releasing on a dashboard card no longer navigates. A deliberate tap with <=10px movement is required.
 
@@ -266,3 +270,6 @@ v0.21.4 phone update hotfix:
 - Forces service-worker update checks with updateViaCache:none and a versioned SW URL.
 - Bumps all local frontend asset filenames/cache to v0213.
 - Adds a tiny visible v0.21.4 build badge for phone update verification.
+
+
+v0.22.1 adds Avatar/Confetti/Profile Frame/Profile Background cosmetic categories, new achievement sprites, multi-cosmetic achievement rewards, updated achievement rewards/requirements, and custom equipped confetti for achievement/lottery celebrations.
