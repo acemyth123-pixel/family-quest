@@ -226,3 +226,12 @@ v0.20.6 — REWARD MODAL CLOSE HARDENING
 - Added dialog.close() plus open-attribute fallback for mobile browser quirks.
 - Reward draft is cleared before the request/render cycle so a stale modal cannot linger.
 - Duplicate submission lock remains active while the backend call is running.
+
+
+v0.20.7 — ADMIN OVERDUE CHORES
+- Admin Control now has an Overdue Chores panel.
+- Shows assigned user, due time, and human-readable overdue age.
+- Admin navigation shows a red overdue count badge.
+- Send Reminder creates an Inbox notification for the assigned user.
+- Server-enforced 6-hour reminder cooldown per chore.
+- Designed so the same notification can later feed phone push notifications.
