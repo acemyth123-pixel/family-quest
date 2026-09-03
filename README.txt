@@ -251,3 +251,9 @@ v0.21.0
 - Grocery Shopping moved to Groceries: weekly shared List Ready check-in (+10 XP default), household ready count, Admin-only Grocery Run completion (+200 XP default), Admin weekly due-day/XP settings, and Admin-only item status changes. Everyone may still add grocery items.
 - Family Requests may optionally target a household member while remaining claimable by any other member; notifications call out the intended person.
 - Phone notification clicks now return to the GitHub Pages /family-quest/ app path instead of the domain root.
+
+
+v0.21.2 hotfix:
+- Home dashboard stat cards now navigate using data-view-jump.
+- Added keyboard activation for clickable stat cards.
+- Bumped PWA cache/assets so the fix refreshes cleanly.
