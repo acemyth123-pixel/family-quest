@@ -1,0 +1,222 @@
+/* Family Quest v0.23.5 — ornate Winter Frost + clean small avatars */
+
+/* Small avatars elsewhere in the app are sprite-only. */
+#sidebarAvatar.profile-showcase,
+#sidebarAvatar.profile-showcase:before,
+#sidebarAvatar.profile-showcase:after,
+.leader-row .profile-showcase,
+.leader-row .profile-showcase:before,
+.leader-row .profile-showcase:after,
+.profile-card:not(.fq-player-shell) .profile-showcase,
+.profile-card:not(.fq-player-shell) .profile-showcase:before,
+.profile-card:not(.fq-player-shell) .profile-showcase:after,
+.home-profile-showcase,
+.home-profile-showcase:before,
+.home-profile-showcase:after{
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+
+/* Keep the lower profile content clean: theme/background belongs to the hero only. */
+.fq-player-shell{
+  background:#0a1020!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.fq-player-shell:before,
+.fq-player-shell:after{display:none!important}
+.fq-profile-content{
+  background:#0a1020;
+  border:0;
+  box-shadow:none;
+}
+.fq-trophy,.fq-collectible,.fq-stat-row{
+  border:1px solid rgba(126,170,220,.18);
+  box-shadow:none;
+  background:linear-gradient(180deg,rgba(10,18,34,.96),rgba(6,12,25,.96));
+}
+
+/* WINTER NIGHT BACKGROUND — illustrated with layered gradients, only in the hero/header area. */
+.fq-player-shell.bg-winter-night-background .fq-profile-head,
+.fq-player-shell.bg-frozen-driveway-background .fq-profile-head{
+  background:
+    radial-gradient(circle at 82% 18%,rgba(240,249,255,.95) 0 3.5%,rgba(198,228,255,.55) 3.8%,transparent 8%),
+    radial-gradient(circle at 20% 14%,rgba(127,255,249,.18) 0 16%,transparent 34%),
+    radial-gradient(circle at 64% 7%,rgba(123,132,255,.15) 0 12%,transparent 26%),
+    linear-gradient(154deg,transparent 0 39%,rgba(143,231,255,.18) 41%,rgba(86,139,255,.1) 47%,transparent 53%),
+    linear-gradient(27deg,transparent 0 42%,rgba(121,255,227,.16) 44%,rgba(79,126,255,.1) 51%,transparent 57%),
+    radial-gradient(ellipse at 50% 70%,rgba(186,225,255,.22),transparent 34%),
+    linear-gradient(180deg,#071a40 0%,#0a2a54 42%,#0e2744 66%,#0b162b 100%)!important;
+}
+
+/* distant stars */
+.fq-player-shell.bg-winter-night-background .fq-profile-head:before,
+.fq-player-shell.bg-frozen-driveway-background .fq-profile-head:before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    radial-gradient(circle at 8% 12%,#fff 0 1.5px,transparent 2px),
+    radial-gradient(circle at 17% 22%,#bcefff 0 1px,transparent 1.6px),
+    radial-gradient(circle at 29% 9%,#fff 0 1px,transparent 1.5px),
+    radial-gradient(circle at 39% 18%,#d9f7ff 0 1.3px,transparent 1.8px),
+    radial-gradient(circle at 53% 12%,#fff 0 1px,transparent 1.5px),
+    radial-gradient(circle at 68% 20%,#c8e8ff 0 1px,transparent 1.6px),
+    radial-gradient(circle at 77% 9%,#fff 0 1.4px,transparent 1.9px),
+    radial-gradient(circle at 91% 25%,#d9f7ff 0 1.2px,transparent 1.7px),
+    radial-gradient(circle at 13% 41%,rgba(255,255,255,.9) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 88% 47%,rgba(255,255,255,.8) 0 1px,transparent 1.5px),
+    linear-gradient(155deg,transparent 0 58%,rgba(9,29,59,.2) 58.3% 100%);
+  opacity:.95;
+}
+
+/* Add mountain silhouettes and pine horizon using layered gradients. */
+.fq-player-shell.bg-winter-night-background .fq-profile-head .fq-profile-stats:before,
+.fq-player-shell.bg-frozen-driveway-background .fq-profile-head .fq-profile-stats:before{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  top:34%;
+  height:34%;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.75;
+  background:
+    linear-gradient(135deg,transparent 0 18%,#9fc9ea55 18.2% 22%,transparent 22.2%),
+    linear-gradient(45deg,transparent 0 34%,#d6edff4d 34.2% 40%,transparent 40.2%),
+    linear-gradient(135deg,transparent 0 50%,#83acd45c 50.2% 56%,transparent 56.2%),
+    linear-gradient(45deg,transparent 0 68%,#c6e4ff4a 68.2% 74%,transparent 74.2%);
+  clip-path:polygon(0 100%,0 70%,8% 62%,15% 70%,23% 49%,31% 69%,41% 41%,52% 71%,62% 52%,73% 72%,84% 48%,93% 67%,100% 60%,100% 100%);
+}
+
+/* WINTER FROST FRAME — actual ornament, not just a bright outline. */
+.fq-player-shell[class*="frame-winter"] .fq-profile-head{
+  border-radius:32px 32px 10px 10px;
+  box-shadow:
+    inset 0 0 40px rgba(171,231,255,.08),
+    0 18px 35px rgba(0,0,0,.22);
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head:after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:7px 0 0!important;
+  z-index:5!important;
+  pointer-events:none!important;
+  border:0!important;
+  border-radius:30px 30px 8px 8px!important;
+  box-shadow:none!important;
+  clip-path:none!important;
+  background:
+    /* top snow cap */
+    linear-gradient(#dff8ff,#c7efff) top 26px left 8%/84% 6px no-repeat,
+    /* left icy rail */
+    linear-gradient(180deg,#ecfcff,#7edcff 38%,#dff8ff 72%,#5fc2ef) left 2px top 36px/8px calc(100% - 52px) no-repeat,
+    /* right icy rail */
+    linear-gradient(180deg,#ecfcff,#7edcff 38%,#dff8ff 72%,#5fc2ef) right 2px top 36px/8px calc(100% - 52px) no-repeat,
+    /* lower frozen ledge */
+    linear-gradient(90deg,transparent 0 4%,#b7ecff 4% 96%,transparent 96%) bottom 0 left 0/100% 8px no-repeat,
+    /* corner crystal clusters */
+    linear-gradient(135deg,transparent 0 46%,#b9ecff 47% 55%,transparent 56%) left 14px top 16px/70px 70px no-repeat,
+    linear-gradient(45deg,transparent 0 46%,#ecfbff 47% 55%,transparent 56%) left 30px top 11px/54px 54px no-repeat,
+    linear-gradient(225deg,transparent 0 46%,#b9ecff 47% 55%,transparent 56%) right 14px top 16px/70px 70px no-repeat,
+    linear-gradient(315deg,transparent 0 46%,#ecfbff 47% 55%,transparent 56%) right 30px top 11px/54px 54px no-repeat,
+    /* frost dots */
+    radial-gradient(circle at 4% 16%,#fff 0 4px,#9ce4ff 5px 8px,transparent 9px),
+    radial-gradient(circle at 96% 16%,#fff 0 4px,#9ce4ff 5px 8px,transparent 9px),
+    radial-gradient(circle at 3% 45%,#dff8ff 0 3px,transparent 4px),
+    radial-gradient(circle at 97% 49%,#dff8ff 0 3px,transparent 4px),
+    radial-gradient(circle at 4% 74%,#fff 0 3px,transparent 4px),
+    radial-gradient(circle at 96% 78%,#fff 0 3px,transparent 4px);
+  filter:
+    drop-shadow(0 0 4px rgba(191,240,255,.9))
+    drop-shadow(0 0 14px rgba(76,190,255,.48));
+}
+
+/* Frosted branches sweep inward from the top corners. */
+.fq-player-shell[class*="frame-winter"] .fq-profile-head > h2:before,
+.fq-player-shell[class*="frame-winter"] .fq-profile-head > h2:after{
+  content:"";
+  position:absolute;
+  top:26px;
+  width:34%;
+  height:54px;
+  z-index:4;
+  pointer-events:none;
+  opacity:.95;
+  filter:drop-shadow(0 0 6px #7edbff99);
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head > h2:before{
+  left:24px;
+  transform:rotate(-4deg);
+  background:
+    linear-gradient(12deg,transparent 0 45%,#c8f2ff 46% 51%,transparent 52%) 0 17px/100% 18px no-repeat,
+    linear-gradient(58deg,transparent 0 45%,#e9fbff 46% 52%,transparent 53%) 12% 2px/46px 42px no-repeat,
+    linear-gradient(122deg,transparent 0 45%,#a9e6ff 46% 52%,transparent 53%) 42% 2px/46px 42px no-repeat,
+    linear-gradient(62deg,transparent 0 45%,#e9fbff 46% 52%,transparent 53%) 68% 8px/42px 36px no-repeat;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head > h2:after{
+  right:24px;
+  transform:scaleX(-1) rotate(-4deg);
+  background:
+    linear-gradient(12deg,transparent 0 45%,#c8f2ff 46% 51%,transparent 52%) 0 17px/100% 18px no-repeat,
+    linear-gradient(58deg,transparent 0 45%,#e9fbff 46% 52%,transparent 53%) 12% 2px/46px 42px no-repeat,
+    linear-gradient(122deg,transparent 0 45%,#a9e6ff 46% 52%,transparent 53%) 42% 2px/46px 42px no-repeat,
+    linear-gradient(62deg,transparent 0 45%,#e9fbff 46% 52%,transparent 53%) 68% 8px/42px 36px no-repeat;
+}
+
+/* Snow shelf / icicles immediately above tabs. */
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{
+  content:"";
+  position:absolute;
+  left:1%;right:1%;
+  top:-14px;
+  height:20px;
+  z-index:5;
+  pointer-events:none;
+  background:
+    linear-gradient(#effcff,#a9e7ff) top/100% 7px no-repeat,
+    linear-gradient(82deg,transparent 0 45%,#c6f2ff 46% 54%,transparent 55%) 7% 2px/20px 20px repeat-x;
+  filter:drop-shadow(0 3px 5px #59c8ff66);
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button{
+  border:1px solid #7bd8ff!important;
+  background:linear-gradient(180deg,rgba(13,42,72,.96),rgba(6,19,38,.98))!important;
+  box-shadow:inset 0 0 18px rgba(112,205,255,.08),0 4px 10px rgba(0,0,0,.24)!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button.active{
+  background:linear-gradient(180deg,rgba(35,103,149,.96),rgba(8,36,65,.98))!important;
+  box-shadow:inset 0 -4px 0 #c4f2ff,0 0 18px rgba(88,205,255,.46)!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs .tab-motif{
+  filter:drop-shadow(0 0 6px #9ee7ff);
+}
+
+/* Make the avatar the clear focal point without wrapping it in the frame cosmetic. */
+.fq-profile-head .profile-showcase,
+.fq-profile-head .profile-showcase:before,
+.fq-profile-head .profile-showcase:after{
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.fq-profile-head .profile-showcase .sprite-avatar,
+.fq-profile-head .profile-showcase img{
+  box-shadow:0 18px 38px rgba(0,0,0,.48)!important;
+}
+
+@media(max-width:780px){
+  .fq-player-shell{padding:0 4px 12px}
+  .fq-profile-head{margin:0;padding-left:14px;padding-right:14px}
+  .fq-player-shell[class*="frame-winter"] .fq-profile-head > h2:before,
+  .fq-player-shell[class*="frame-winter"] .fq-profile-head > h2:after{width:27%}
+  .fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{top:-11px}
+}
