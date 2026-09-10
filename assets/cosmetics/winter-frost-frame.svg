@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="none">
+<defs>
+ <linearGradient id="ice" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#effcff"/><stop offset=".35" stop-color="#9de7ff"/><stop offset=".7" stop-color="#55bde8"/><stop offset="1" stop-color="#dff8ff"/></linearGradient>
+ <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#3b322f"/><stop offset=".5" stop-color="#211c1c"/><stop offset="1" stop-color="#4e4039"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#00111f" flood-opacity=".8"/></filter>
+</defs>
+<!-- top branch -->
+<path d="M28 74 Q165 34 286 65 T566 62 T872 78" fill="none" stroke="url(#wood)" stroke-width="30" stroke-linecap="round" filter="url(#shadow)"/>
+<path d="M28 62 Q170 20 300 55 T570 51 T872 66" fill="none" stroke="#f2fbff" stroke-width="28" stroke-linecap="round"/>
+<path d="M20 73 Q180 33 310 66 T590 62 T880 78" fill="none" stroke="#b9e8f7" stroke-width="10" stroke-linecap="round" opacity=".78"/>
+<!-- pine boughs top left/right -->
+<g stroke="#173a3b" stroke-width="12" stroke-linecap="round" fill="none">
+ <path d="M35 95 Q120 118 205 175"/><path d="M46 116 L22 155 M75 125 L48 178 M105 137 L74 191 M136 151 L107 207 M165 166 L140 219"/>
+ <path d="M865 95 Q780 118 695 175"/><path d="M854 116 L878 155 M825 125 L852 178 M795 137 L826 191 M764 151 L793 207 M735 166 L760 219"/>
+</g>
+<g stroke="#dff8ff" stroke-width="10" stroke-linecap="round" fill="none" opacity=".95"><path d="M44 96 Q110 111 178 154"/><path d="M856 96 Q790 111 722 154"/></g>
+<!-- side frozen trunks -->
+<path d="M38 122 Q24 375 40 616 T34 1060" fill="none" stroke="url(#wood)" stroke-width="34" stroke-linecap="round" filter="url(#shadow)"/>
+<path d="M862 122 Q876 375 860 616 T866 1060" fill="none" stroke="url(#wood)" stroke-width="34" stroke-linecap="round" filter="url(#shadow)"/>
+<path d="M31 134 Q21 370 34 616 T29 1055" fill="none" stroke="url(#ice)" stroke-width="14" stroke-linecap="round" opacity=".96" filter="url(#glow)"/>
+<path d="M869 134 Q879 370 866 616 T871 1055" fill="none" stroke="url(#ice)" stroke-width="14" stroke-linecap="round" opacity=".96" filter="url(#glow)"/>
+<!-- snow clumps sides -->
+<g fill="#f4fcff" stroke="#bce9f7" stroke-width="3">
+ <ellipse cx="39" cy="250" rx="32" ry="21"/><ellipse cx="34" cy="468" rx="29" ry="19"/><ellipse cx="40" cy="740" rx="34" ry="22"/><ellipse cx="34" cy="956" rx="31" ry="20"/>
+ <ellipse cx="861" cy="250" rx="32" ry="21"/><ellipse cx="866" cy="468" rx="29" ry="19"/><ellipse cx="860" cy="740" rx="34" ry="22"/><ellipse cx="866" cy="956" rx="31" ry="20"/>
+</g>
+<!-- crystal clusters -->
+<g fill="url(#ice)" stroke="#eafcff" stroke-width="4" filter="url(#glow)">
+ <path d="M16 202 L42 130 L62 204 L45 232 Z"/><path d="M54 222 L76 164 L90 229 L72 250 Z"/>
+ <path d="M884 202 L858 130 L838 204 L855 232 Z"/><path d="M846 222 L824 164 L810 229 L828 250 Z"/>
+ <path d="M5 1050 L35 952 L58 1053 L39 1094 Z"/><path d="M47 1073 L76 985 L93 1079 L70 1116 Z"/>
+ <path d="M895 1050 L865 952 L842 1053 L861 1094 Z"/><path d="M853 1073 L824 985 L807 1079 L830 1116 Z"/>
+</g>
+<!-- frost twigs -->
+<g stroke="url(#ice)" stroke-width="7" stroke-linecap="round" fill="none" opacity=".9">
+ <path d="M31 330 L96 288 L77 330 M94 290 L125 264 M30 594 L102 548 L80 592 M101 550 L132 520"/>
+ <path d="M869 330 L804 288 L823 330 M806 290 L775 264 M870 594 L798 548 L820 592 M799 550 L768 520"/>
+</g>
+<!-- bottom branch/snow shelf -->
+<path d="M30 1082 Q190 1056 330 1077 T610 1075 T870 1084" fill="none" stroke="url(#wood)" stroke-width="34" stroke-linecap="round" filter="url(#shadow)"/>
+<path d="M25 1065 Q178 1034 325 1060 T606 1058 T875 1068" fill="none" stroke="#f3fbff" stroke-width="31" stroke-linecap="round"/>
+<path d="M22 1075 Q190 1045 330 1069 T610 1068 T878 1078" fill="none" stroke="#b9e7f7" stroke-width="10" opacity=".82"/>
+<!-- icicles -->
+<g fill="url(#ice)" stroke="#e7fbff" stroke-width="2" filter="url(#glow)">
+ <path d="M84 1080 l12 0 -6 62 z"/><path d="M142 1074 l14 0 -7 88 z"/><path d="M226 1070 l12 0 -6 56 z"/><path d="M312 1068 l14 0 -7 79 z"/><path d="M405 1071 l12 0 -6 52 z"/><path d="M493 1068 l15 0 -7 92 z"/><path d="M588 1070 l12 0 -6 61 z"/><path d="M684 1073 l14 0 -7 83 z"/><path d="M782 1077 l12 0 -6 56 z"/>
+</g>
+<!-- top icicles -->
+<g fill="url(#ice)" stroke="#eefcff" stroke-width="2" filter="url(#glow)">
+ <path d="M110 66 h14 l-7 70 z"/><path d="M205 57 h16 l-8 100 z"/><path d="M330 58 h12 l-6 69 z"/><path d="M443 52 h18 l-9 116 z"/><path d="M566 55 h13 l-6 76 z"/><path d="M690 58 h16 l-8 93 z"/><path d="M795 65 h13 l-6 66 z"/>
+</g>
+</svg>
