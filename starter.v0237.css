@@ -1,0 +1,53 @@
+/* Family Quest v0.23.7 — Winter Frost illustrated cosmetic pass */
+/* Keep the rest of the profile clean; artwork belongs to the hero only. */
+.fq-player-shell.bg-winter-night-background .fq-profile-head,
+.fq-player-shell.bg-frozen-driveway-background .fq-profile-head{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:#071526 url('assets/cosmetics/winter-frost-background.svg?v=0237') center/cover no-repeat!important;
+  border-radius:30px 30px 8px 8px!important;
+  box-shadow:0 18px 38px rgba(0,0,0,.38),inset 0 0 70px rgba(126,220,255,.08)!important;
+}
+.fq-player-shell.bg-winter-night-background .fq-profile-head:before,
+.fq-player-shell.bg-frozen-driveway-background .fq-profile-head:before{
+  content:""!important;display:block!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;
+  background:linear-gradient(180deg,rgba(2,11,28,.08) 0%,rgba(2,12,28,.02) 36%,rgba(3,11,24,.33) 74%,rgba(3,10,22,.66) 100%)!important;
+  border:0!important;border-radius:inherit!important;opacity:1!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head:after{
+  content:""!important;display:block!important;position:absolute!important;inset:-2px!important;z-index:8!important;pointer-events:none!important;
+  background:transparent url('assets/cosmetics/winter-frost-frame.svg?v=0237') center/100% 100% no-repeat!important;
+  border:0!important;border-radius:30px 30px 8px 8px!important;box-shadow:none!important;clip-path:none!important;filter:none!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head>*{position:relative;z-index:3}
+/* Give content breathing room so the art reads as a real frame instead of sitting on the text. */
+.fq-player-shell[class*="frame-winter"] .fq-profile-head{padding:92px 64px 82px!important;min-height:980px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head .profile-showcase{margin-top:18px!important;width:clamp(190px,42vw,270px)!important;height:clamp(190px,42vw,270px)!important;filter:drop-shadow(0 15px 22px rgba(0,0,0,.55))}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head h2{margin-top:12px!important;text-shadow:0 3px 14px rgba(0,0,0,.8),0 0 18px rgba(151,225,255,.22)}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head .profile-title{text-shadow:0 2px 10px rgba(0,0,0,.85)}
+.fq-player-shell[class*="frame-winter"] .fq-xp-track{background:rgba(2,11,22,.82)!important;border-color:rgba(164,232,255,.34)!important;box-shadow:inset 0 0 12px rgba(0,0,0,.48),0 0 14px rgba(97,206,255,.12)!important}
+.fq-player-shell[class*="frame-winter"] .fq-profile-stats{width:min(100%,650px)!important;gap:12px!important}
+.fq-player-shell[class*="frame-winter"] .fq-stat{background:linear-gradient(180deg,rgba(4,18,36,.84),rgba(3,12,27,.92))!important;border:1px solid rgba(157,224,255,.2)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 20px rgba(0,0,0,.22)!important;backdrop-filter:blur(2px)}
+/* Frozen shelf visually bridges the illustrated hero to the existing tab UI. */
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs{position:relative!important;margin-top:-34px!important;z-index:10!important;padding-top:20px!important}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{
+  content:""!important;position:absolute!important;left:1%!important;right:1%!important;top:0!important;height:30px!important;pointer-events:none!important;z-index:0!important;
+  background:linear-gradient(180deg,#f4fcff 0 25%,#bcecff 28% 48%,#70cbe9 52% 60%,transparent 64%)!important;
+  clip-path:polygon(0 0,100% 0,100% 45%,96% 45%,95% 100%,93% 45%,88% 45%,87% 83%,85% 45%,78% 45%,77% 95%,75% 45%,69% 45%,68% 72%,66% 45%,58% 45%,57% 92%,55% 45%,49% 45%,48% 75%,46% 45%,39% 45%,38% 100%,36% 45%,29% 45%,28% 78%,26% 45%,18% 45%,17% 90%,15% 45%,8% 45%,7% 72%,5% 45%,0 45%)!important;
+  filter:drop-shadow(0 4px 7px rgba(80,203,255,.38))!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button{position:relative;z-index:2;border:1px solid rgba(120,219,255,.8)!important;background:linear-gradient(180deg,rgba(12,48,78,.96),rgba(4,22,42,.98))!important;box-shadow:inset 0 0 20px rgba(89,200,255,.08),0 5px 13px rgba(0,0,0,.32)!important}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button.active{background:linear-gradient(180deg,rgba(37,108,151,.98),rgba(7,39,68,.98))!important;box-shadow:inset 0 -4px 0 #e0f9ff,0 0 20px rgba(91,211,255,.46),0 6px 15px rgba(0,0,0,.28)!important}
+/* Never carry the large illustration/frame into compact avatars elsewhere. */
+.sidebar .profile-showcase,.profile-card.compact .profile-showcase,.leader-row .profile-showcase,.home-profile-showcase{background:none!important;border:0!important;box-shadow:none!important}
+@media(max-width:780px){
+ .fq-player-shell[class*="frame-winter"] .fq-profile-head{padding:78px 42px 72px!important;min-height:900px!important}
+ .fq-player-shell[class*="frame-winter"] .fq-profile-head .profile-showcase{width:min(58vw,250px)!important;height:min(58vw,250px)!important;margin-top:24px!important}
+ .fq-player-shell[class*="frame-winter"] .fq-profile-stats{width:100%!important}
+ .fq-player-shell[class*="frame-winter"] .fq-profile-tabs{margin-top:-30px!important;padding-top:18px!important}
+}
+@media(max-width:480px){
+ .fq-player-shell[class*="frame-winter"] .fq-profile-head{padding-left:34px!important;padding-right:34px!important;min-height:860px!important}
+ .fq-player-shell[class*="frame-winter"] .fq-profile-head .profile-showcase{width:min(62vw,235px)!important;height:min(62vw,235px)!important}
+}
