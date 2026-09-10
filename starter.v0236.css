@@ -12,3 +12,73 @@
 /* v0.23.3 contained a temporary pseudo-element version label hard-coded to v0.23.4. Disable it so the real HTML badge is authoritative. */
 .build-badge{font-size:12px!important}.build-badge:after{content:none!important;display:none!important}
 @media(max-width:780px){.fq-player-shell{padding:0 4px 12px}.fq-profile-head{margin:0;padding-left:14px;padding-right:14px}.fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{top:-11px}}
+
+/* Winter Frost showcase pass — still pure CSS, no image assets. */
+.fq-player-shell.bg-winter-night-background .fq-profile-head,
+.fq-player-shell.bg-frozen-driveway-background .fq-profile-head{
+  min-height:560px;
+  background:
+    radial-gradient(circle at 78% 14%,rgba(255,255,255,.98) 0 28px,rgba(208,235,255,.70) 29px 38px,transparent 58px),
+    radial-gradient(ellipse at 26% 12%,rgba(84,255,221,.24) 0 11%,rgba(74,181,255,.14) 18%,transparent 40%),
+    linear-gradient(162deg,transparent 0 36%,rgba(91,255,224,.15) 41%,rgba(93,152,255,.11) 49%,transparent 57%),
+    linear-gradient(197deg,transparent 0 34%,rgba(98,168,255,.13) 40%,rgba(136,87,255,.08) 48%,transparent 58%),
+    linear-gradient(164deg,transparent 0 66%,rgba(174,220,246,.16) 66.4% 69%,transparent 69.5%),
+    linear-gradient(196deg,transparent 0 68%,rgba(206,235,252,.13) 68.4% 71%,transparent 71.5%),
+    linear-gradient(180deg,#06142f 0%,#0a2850 48%,#0b1f3d 72%,#081425 100%)!important;
+}
+.fq-player-shell.bg-winter-night-background .fq-profile-head:before,
+.fq-player-shell.bg-frozen-driveway-background .fq-profile-head:before{
+  background:
+    radial-gradient(circle at 7% 11%,#fff 0 1.6px,transparent 2px),radial-gradient(circle at 16% 21%,#bff3ff 0 1.2px,transparent 1.7px),radial-gradient(circle at 28% 8%,#fff 0 1.2px,transparent 1.7px),radial-gradient(circle at 41% 18%,#d9f7ff 0 1.3px,transparent 1.8px),radial-gradient(circle at 56% 10%,#fff 0 1.2px,transparent 1.7px),radial-gradient(circle at 69% 22%,#bde8ff 0 1.1px,transparent 1.6px),radial-gradient(circle at 91% 26%,#e6fbff 0 1.4px,transparent 1.9px),
+    linear-gradient(151deg,transparent 0 69%,rgba(12,34,58,.05) 69.2%),
+    linear-gradient(157deg,transparent 0 76%,rgba(4,17,32,.78) 76.3% 100%),
+    linear-gradient(203deg,transparent 0 78%,rgba(7,23,41,.92) 78.3% 100%)!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head{
+  padding:86px 42px 34px!important;
+  border-radius:36px 36px 10px 10px!important;
+  box-shadow:inset 0 0 70px rgba(132,218,255,.10),0 22px 44px rgba(0,0,0,.30)!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head:after{
+  inset:5px 0 0!important;
+  border-radius:34px 34px 8px 8px!important;
+  background:
+    radial-gradient(ellipse at 6% 4%,#fff 0 9px,#c9f3ff 10px 16px,transparent 17px),
+    radial-gradient(ellipse at 18% 2%,#edfaff 0 7px,#8edcff 8px 13px,transparent 14px),
+    radial-gradient(ellipse at 82% 2%,#edfaff 0 7px,#8edcff 8px 13px,transparent 14px),
+    radial-gradient(ellipse at 94% 4%,#fff 0 9px,#c9f3ff 10px 16px,transparent 17px),
+    linear-gradient(#f2fdff,#bfefff) top 24px left 7%/86% 10px no-repeat,
+    linear-gradient(180deg,#f5feff 0%,#7edcff 24%,#dff8ff 48%,#72ccf5 72%,#e8fbff 100%) left 1px top 34px/11px calc(100% - 54px) no-repeat,
+    linear-gradient(180deg,#f5feff 0%,#7edcff 24%,#dff8ff 48%,#72ccf5 72%,#e8fbff 100%) right 1px top 34px/11px calc(100% - 54px) no-repeat,
+    linear-gradient(90deg,transparent 0 3%,#d9f7ff 3% 97%,transparent 97%) bottom 0/100% 11px no-repeat,
+    linear-gradient(132deg,transparent 0 45%,#eafbff 46% 49%,transparent 50%) left 16px top 12px/110px 78px no-repeat,
+    linear-gradient(58deg,transparent 0 46%,#9fe4ff 47% 50%,transparent 51%) left 42px top 4px/90px 72px no-repeat,
+    linear-gradient(228deg,transparent 0 45%,#eafbff 46% 49%,transparent 50%) right 16px top 12px/110px 78px no-repeat,
+    linear-gradient(302deg,transparent 0 46%,#9fe4ff 47% 50%,transparent 51%) right 42px top 4px/90px 72px no-repeat,
+    radial-gradient(circle at 2.5% 30%,#fff 0 4px,#8edcff 5px 8px,transparent 9px),
+    radial-gradient(circle at 97.5% 33%,#fff 0 4px,#8edcff 5px 8px,transparent 9px),
+    radial-gradient(circle at 2.5% 62%,#dff8ff 0 4px,transparent 5px),
+    radial-gradient(circle at 97.5% 66%,#dff8ff 0 4px,transparent 5px)!important;
+  filter:drop-shadow(0 0 6px rgba(198,244,255,.95)) drop-shadow(0 0 18px rgba(70,188,255,.58))!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{
+  top:-18px!important;height:27px!important;
+  background:
+    linear-gradient(#f4feff,#b7ebff) top/100% 9px no-repeat,
+    linear-gradient(82deg,transparent 0 45%,#dff8ff 46% 54%,transparent 55%) 8% 5px/26px 26px repeat-x!important;
+  filter:drop-shadow(0 4px 6px rgba(75,195,255,.50))!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button{
+  border-color:#8bdfff!important;
+  background:linear-gradient(180deg,rgba(18,59,94,.98),rgba(7,23,42,.98))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 20px rgba(87,195,255,.08),0 5px 12px rgba(0,0,0,.26)!important;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button.active{
+  background:linear-gradient(180deg,rgba(56,131,175,.98),rgba(11,48,76,.98))!important;
+  box-shadow:inset 0 -4px 0 #dcf8ff,0 0 20px rgba(87,207,255,.50)!important;
+}
+@media(max-width:780px){
+ .fq-player-shell.bg-winter-night-background .fq-profile-head,.fq-player-shell.bg-frozen-driveway-background .fq-profile-head{min-height:500px}
+ .fq-player-shell[class*="frame-winter"] .fq-profile-head{padding:76px 20px 30px!important}
+ .fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{top:-15px!important;height:22px!important}
+}
