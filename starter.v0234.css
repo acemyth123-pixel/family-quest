@@ -1,0 +1,83 @@
+/* Family Quest v0.23.4 — Winter Frost polish + borderless compact avatars */
+/* Compact/secondary surfaces show the sprite only. Frames/backgrounds are reserved for the full player profile. */
+#sidebarAvatar.profile-showcase,
+.profile-showcase-sidebar,
+.profile-showcase-compact,
+.leader-profile-showcase,
+.home-profile-showcase,
+.profile-card .profile-showcase:not(.fq-profile-head .profile-showcase){
+  padding:0!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+#sidebarAvatar.profile-showcase:before,#sidebarAvatar.profile-showcase:after,
+.profile-showcase-sidebar:before,.profile-showcase-sidebar:after,
+.profile-showcase-compact:before,.profile-showcase-compact:after,
+.leader-profile-showcase:before,.leader-profile-showcase:after,
+.home-profile-showcase:before,.home-profile-showcase:after,
+.profile-card .profile-showcase:not(.fq-profile-head .profile-showcase):before,
+.profile-card .profile-showcase:not(.fq-profile-head .profile-showcase):after{display:none!important;content:none!important}
+#sidebarAvatar.profile-showcase .sprite-avatar,
+.profile-showcase-sidebar .sprite-avatar,
+.profile-showcase-compact .sprite-avatar,
+.leader-profile-showcase .sprite-avatar,
+.home-profile-showcase .sprite-avatar{border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important}
+
+/* Full profile avatar itself also remains unframed; the profile header owns the cosmetic frame. */
+.fq-profile-head .profile-showcase{background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+.fq-profile-head .profile-showcase:before,.fq-profile-head .profile-showcase:after{display:none!important;content:none!important}
+.fq-profile-head .profile-showcase .sprite-avatar{border:0!important;box-shadow:none!important;background:transparent!important}
+
+/* Winter Frost becomes a decorative icy structure around the identity area only. */
+.fq-player-shell[class*="frame-winter"]{--theme:#8edcff;--theme2:#effcff}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head{
+  padding-left:34px;padding-right:34px;
+  background:
+    radial-gradient(circle at 7% 12%,rgba(255,255,255,.95) 0 2px,transparent 3px),
+    radial-gradient(circle at 17% 22%,rgba(190,237,255,.9) 0 2px,transparent 3px),
+    radial-gradient(circle at 86% 16%,rgba(255,255,255,.9) 0 2.5px,transparent 3.5px),
+    radial-gradient(circle at 93% 36%,rgba(174,229,255,.85) 0 2px,transparent 3px),
+    radial-gradient(circle at 10% 63%,rgba(220,248,255,.8) 0 2px,transparent 3px),
+    radial-gradient(circle at 89% 70%,rgba(255,255,255,.85) 0 2px,transparent 3px),
+    linear-gradient(180deg,rgba(222,247,255,.10),rgba(120,205,240,.035) 42%,transparent 78%);
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head:before{
+  content:""!important;display:block!important;position:absolute!important;inset:8px 0 0!important;z-index:2!important;pointer-events:none!important;border:0!important;border-radius:30px 30px 0 0!important;
+  background:
+    linear-gradient(128deg,transparent 0 42%,rgba(235,251,255,.9) 43% 45%,transparent 46%) 0 0/82px 82px no-repeat,
+    linear-gradient(52deg,transparent 0 42%,rgba(183,231,252,.85) 43% 45%,transparent 46%) 100% 0/82px 82px no-repeat,
+    linear-gradient(118deg,transparent 0 47%,rgba(190,238,255,.7) 48% 50%,transparent 51%) 0 48%/54px 150px no-repeat,
+    linear-gradient(62deg,transparent 0 47%,rgba(190,238,255,.7) 48% 50%,transparent 51%) 100% 50%/54px 150px no-repeat;
+  opacity:.95;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-head:after{
+  content:""!important;display:block!important;position:absolute!important;inset:8px 0 0!important;z-index:3!important;pointer-events:none!important;border-radius:30px 30px 4px 4px!important;
+  border-style:solid!important;border-width:10px 7px 12px!important;border-color:#d9f7ff #8edcff #c6f2ff!important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.95),
+    inset 0 0 18px rgba(106,207,247,.28),
+    0 0 0 1px rgba(58,153,194,.45),
+    0 0 18px rgba(100,214,255,.65),
+    0 0 34px rgba(99,204,247,.28)!important;
+  background:
+    radial-gradient(ellipse at 6% 5%,#fff 0 5px,#bdefff 6px 10px,transparent 11px),
+    radial-gradient(ellipse at 16% 3%,#e9fbff 0 4px,#8fdcff 5px 8px,transparent 9px),
+    radial-gradient(ellipse at 84% 3%,#fff 0 5px,#bdefff 6px 10px,transparent 11px),
+    radial-gradient(ellipse at 95% 7%,#e9fbff 0 4px,#8fdcff 5px 8px,transparent 9px),
+    linear-gradient(174deg,transparent 0 55%,rgba(255,255,255,.95) 56% 58%,rgba(130,214,247,.9) 59% 61%,transparent 62%) left top/115px 38px no-repeat,
+    linear-gradient(186deg,transparent 0 55%,rgba(255,255,255,.95) 56% 58%,rgba(130,214,247,.9) 59% 61%,transparent 62%) right top/115px 38px no-repeat;
+  -webkit-mask:none!important;mask:none!important;padding:0!important;
+  clip-path:polygon(0 0,100% 0,100% 97.5%,96% 100%,92% 97.5%,88% 100%,84% 97.5%,80% 100%,76% 97.5%,72% 100%,68% 97.5%,64% 100%,60% 97.5%,56% 100%,52% 97.5%,48% 100%,44% 97.5%,40% 100%,36% 97.5%,32% 100%,28% 97.5%,24% 100%,20% 97.5%,16% 100%,12% 97.5%,8% 100%,4% 97.5%,0 100%);
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{
+  content:"❄  ✦  ❅  ✦  ❄";position:absolute;left:50%;top:-16px;transform:translateX(-50%);z-index:5;color:#dff8ff;text-shadow:0 0 8px #72d8ff,0 0 16px #72d8ff;font-size:17px;letter-spacing:8px;white-space:nowrap;pointer-events:none;
+}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button .tab-motif{filter:drop-shadow(0 0 6px #78dcff)}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button{border-color:#79cfee!important;background:linear-gradient(180deg,rgba(24,66,96,.96),rgba(8,24,40,.96))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.fq-player-shell[class*="frame-winter"] .fq-profile-tabs button.active{background:linear-gradient(180deg,rgba(56,129,169,.95),rgba(16,52,76,.98))!important;box-shadow:inset 0 -4px 0 #d9f7ff,0 0 14px rgba(91,207,255,.35)!important}
+@media(max-width:780px){
+  .fq-player-shell[class*="frame-winter"] .fq-profile-head{padding-left:18px;padding-right:18px}
+  .fq-player-shell[class*="frame-winter"] .fq-profile-tabs:before{font-size:14px;letter-spacing:5px;top:-14px}
+}
