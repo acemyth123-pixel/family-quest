@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04142d"/><stop offset=".45" stop-color="#0b3158"/><stop offset=".72" stop-color="#102945"/><stop offset="1" stop-color="#071526"/></linearGradient>
+ <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#123956"/><stop offset=".5" stop-color="#0b2944"/><stop offset="1" stop-color="#061423"/></linearGradient>
+ <linearGradient id="auroraA" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#5fffd9" stop-opacity="0"/><stop offset=".25" stop-color="#58f2d1" stop-opacity=".55"/><stop offset=".55" stop-color="#7ad3ff" stop-opacity=".26"/><stop offset=".8" stop-color="#9e74ff" stop-opacity=".42"/><stop offset="1" stop-color="#6fffe3" stop-opacity="0"/></linearGradient>
+ <linearGradient id="auroraB" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#6bdcff" stop-opacity="0"/><stop offset=".35" stop-color="#6be7ff" stop-opacity=".32"/><stop offset=".65" stop-color="#70ffc8" stop-opacity=".45"/><stop offset="1" stop-color="#70ffc8" stop-opacity="0"/></linearGradient>
+ <radialGradient id="moon"><stop offset="0" stop-color="#fff"/><stop offset=".68" stop-color="#d8efff"/><stop offset="1" stop-color="#a5cde9"/></radialGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="12"/></filter>
+ <filter id="soft"><feGaussianBlur stdDeviation="24"/></filter>
+ <pattern id="stars" width="92" height="74" patternUnits="userSpaceOnUse"><circle cx="12" cy="18" r="1.4" fill="#fff" opacity=".75"/><circle cx="56" cy="12" r="1" fill="#bfefff" opacity=".7"/><circle cx="79" cy="53" r="1.5" fill="#fff" opacity=".58"/><circle cx="34" cy="61" r=".8" fill="#d6f4ff" opacity=".8"/></pattern>
+</defs>
+<rect width="900" height="1200" fill="url(#sky)"/>
+<rect width="900" height="540" fill="url(#stars)" opacity=".8"/>
+<path d="M-80 185 C100 30 225 260 360 95 S650 225 980 40" fill="none" stroke="url(#auroraA)" stroke-width="92" opacity=".26" filter="url(#soft)"/>
+<path d="M-120 255 C95 95 240 315 430 145 S720 250 1020 120" fill="none" stroke="url(#auroraB)" stroke-width="54" opacity=".3" filter="url(#glow)"/>
+<path d="M-40 175 C120 50 250 225 390 92 S650 210 940 68" fill="none" stroke="url(#auroraA)" stroke-width="26" opacity=".55"/>
+<circle cx="700" cy="185" r="56" fill="#c8e7ff" opacity=".12" filter="url(#glow)"/><circle cx="700" cy="185" r="42" fill="url(#moon)"/><circle cx="686" cy="174" r="8" fill="#9fbfd4" opacity=".34"/><circle cx="715" cy="199" r="11" fill="#95b7ce" opacity=".25"/><circle cx="723" cy="164" r="5" fill="#92b4ca" opacity=".28"/>
+<!-- distant mountain range -->
+<path d="M0 525 L105 408 L160 465 L245 340 L330 445 L410 385 L492 470 L585 352 L650 420 L732 326 L830 456 L900 392 L900 640 L0 640 Z" fill="#183a5b"/>
+<path d="M0 525 L105 408 L160 465 L245 340 L330 445 L410 385 L492 470 L585 352 L650 420 L732 326 L830 456 L900 392" fill="none" stroke="#d6efff" stroke-width="8" opacity=".85"/>
+<path d="M75 443 L105 408 L128 438 L113 432 L104 451 L94 435 Z M212 380 L245 340 L278 390 L252 376 L244 402 L230 374 Z M700 365 L732 326 L765 372 L740 358 L731 386 L718 358 Z M557 390 L585 352 L615 392 L592 381 L584 408 L570 381 Z" fill="#eefaff" opacity=".9"/>
+<!-- pine forest -->
+<g fill="#071a2d" opacity=".95">
+ <path d="M35 475 l-42 96 h27 l-35 72 h38 l-28 67 h80 l-26-67 h36 l-34-72 h25z"/>
+ <path d="M110 500 l-36 82 h22 l-30 63 h31 l-24 57 h70 l-23-57 h31 l-29-63 h22z"/>
+ <path d="M820 474 l-42 96 h27 l-35 72 h38 l-28 67 h80 l-26-67 h36 l-34-72 h25z"/>
+ <path d="M748 518 l-33 76 h21 l-28 59 h30 l-23 53 h65 l-21-53 h29 l-27-59 h20z"/>
+ <path d="M192 508 l-28 66 h18 l-23 50 h25 l-19 47 h55 l-18-47 h24 l-22-50 h17z"/>
+ <path d="M640 500 l-29 68 h19 l-24 52 h26 l-20 48 h58 l-19-48 h26 l-24-52 h18z"/>
+</g>
+<!-- snow banks -->
+<path d="M0 650 Q120 605 235 650 T450 646 T665 650 T900 635 V760 H0 Z" fill="#d9eff9" opacity=".82"/>
+<path d="M0 676 Q150 625 300 682 T590 668 T900 656 V775 H0 Z" fill="#aacfe4" opacity=".34"/>
+<!-- frozen lake -->
+<path d="M0 690 Q450 625 900 690 V1200 H0 Z" fill="url(#lake)"/>
+<path d="M80 760 Q280 720 455 750 T820 742" fill="none" stroke="#8dd8ef" stroke-opacity=".22" stroke-width="6"/>
+<path d="M160 842 Q380 800 710 846" fill="none" stroke="#d4f4ff" stroke-opacity=".12" stroke-width="3"/>
+<path d="M100 995 Q350 940 790 1010" fill="none" stroke="#74bed9" stroke-opacity=".1" stroke-width="12"/>
+<!-- cabin -->
+<g transform="translate(676 585)"><rect x="0" y="42" width="116" height="72" rx="3" fill="#392a27"/><path d="M-12 46 L56 3 L128 46 Z" fill="#201d22"/><path d="M-2 42 Q55 18 119 42" fill="none" stroke="#eaf7ff" stroke-width="10"/><rect x="18" y="63" width="23" height="25" fill="#ffc65d"/><rect x="73" y="63" width="23" height="25" fill="#ffc65d"/><rect x="50" y="78" width="20" height="36" fill="#8b5c38"/><circle cx="31" cy="76" r="19" fill="#ffb33f" opacity=".12" filter="url(#glow)"/><circle cx="85" cy="76" r="19" fill="#ffb33f" opacity=".12" filter="url(#glow)"/><rect x="90" y="6" width="9" height="27" fill="#4d403b"/><path d="M95 4 C112 -16 85 -25 103 -48" fill="none" stroke="#c9deea" stroke-width="10" opacity=".24" filter="url(#glow)"/></g>
+<!-- foreground snow silhouettes -->
+<path d="M0 1085 Q90 1010 190 1068 T382 1076 T580 1056 T900 1090 V1200 H0Z" fill="#081728" opacity=".86"/>
+<g fill="#0b2137"><path d="M85 900 l-42 96 h26 l-34 70 h37 l-27 64 h78 l-26-64 h36 l-33-70 h25z"/><path d="M800 900 l-44 100 h27 l-36 75 h39 l-30 70 h84 l-28-70 h38 l-35-75 h26z"/></g>
+<rect width="900" height="1200" fill="url(#stars)" opacity=".18"/>
+</svg>
