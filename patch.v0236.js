@@ -1,12 +1,18 @@
-/* Family Quest v0.23.6 — reliable Admin catalog tabs */
+/* Family Quest v0.23.6 — reliable Admin catalog tabs + badge enforcement */
 (function(){
   state.adminCatalogTab = state.adminCatalogTab || 'chore';
+
+  function enforceBadge(){
+    const badge=document.getElementById('buildBadge');
+    if(badge && badge.textContent!=='v0.23.6') badge.textContent='v0.23.6';
+  }
 
   function labelOf(section){
     return section?.querySelector('h3')?.textContent?.trim() || '';
   }
 
   function applyAdminTabs(){
+    enforceBadge();
     if(state.view !== 'admin') return;
     const root = document.getElementById('view');
     if(!root) return;
@@ -16,6 +22,9 @@
       return labels.includes('Chores') && labels.includes('Rewards') && labels.includes('Achievements');
     });
     if(!management) return;
+
+    /* Remove the older v0.22.5 tab row so only one tier remains. */
+    management.querySelectorAll('.admin-catalog-tabs:not(.admin-catalog-tabs-v236)').forEach(x=>x.remove());
 
     let tabs = management.querySelector('.admin-catalog-tabs-v236');
     if(!tabs){
@@ -68,7 +77,7 @@
   const previousRender = render;
   render = function(){
     previousRender();
-    queueMicrotask(applyAdminTabs);
+    queueMicrotask(()=>{enforceBadge();applyAdminTabs();});
   };
 
   document.addEventListener('click', e => {
@@ -80,6 +89,13 @@
     applyAdminTabs();
   }, true);
 
+  /* Keep the visible build marker authoritative even if older patch code rewrites it later. */
+  const badgeObserver=new MutationObserver(enforceBadge);
+  const badge=document.getElementById('buildBadge');
+  if(badge) badgeObserver.observe(badge,{childList:true,characterData:true,subtree:true});
+  window.addEventListener('load',()=>{enforceBadge();setTimeout(enforceBadge,0);setTimeout(enforceBadge,500);});
+
   window.FQApplyAdminTabs = applyAdminTabs;
+  enforceBadge();
   queueMicrotask(applyAdminTabs);
 })();
