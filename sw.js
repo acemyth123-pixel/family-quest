@@ -1,11 +1,11 @@
-const CACHE='family-quest-v0236';
-const CORE=['./styles.v0224.css','./starter.v0225.css','./starter.v0226.css','./starter.v0227.css','./starter.v0230.css','./starter.v0231.css','./starter.v0233.css','./starter.v0236.css','./app.v0222.js','./patch.v0224.js','./patch.v0225.js','./patch.v0226.js','./patch.v0227.js','./patch.v0230.js','./patch.v0231.js','./patch.v0232.js','./patch.v0236.js','./auth.v0222.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+const CACHE='family-quest-v02381';
+const CORE=['./','./styles.v0224.css','./starter.v0225.css','./starter.v0226.css','./starter.v0227.css','./starter.v0230.css','./starter.v0231.css','./starter.v0233.css','./starter.v0236.css','./starter.v0237.css','./starter.v0238.css','./app.v0222.js','./patch.v0224.js','./patch.v0225.js','./patch.v0226.js','./patch.v0227.js','./patch.v0230.js','./patch.v0231.js','./patch.v0232.js','./patch.v0238.js','./patch.v02381.js','./auth.v0222.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
 self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET')return;
  if(event.request.mode==='navigate'){
-   event.respondWith(fetch(event.request,{cache:'no-store'}).catch(()=>new Response('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font-family:sans-serif;background:#10131a;color:white;padding:24px"><h2>Family Quest is offline</h2><p>Reconnect and reopen the app.</p></body>',{headers:{'Content-Type':'text/html'}})));
+   event.respondWith(fetch(event.request,{cache:'no-store'}).catch(()=>caches.match('./')).then(r=>r||new Response('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font-family:sans-serif;background:#10131a;color:white;padding:24px"><h2>Family Quest is offline</h2><p>Reconnect and reopen the app.</p></body>',{headers:{'Content-Type':'text/html'}})));
    return;
  }
  event.respondWith(fetch(event.request,{cache:'no-store'}).then(r=>{if(r&&r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(event.request,copy)).catch(()=>{})}return r}).catch(()=>caches.match(event.request)));
