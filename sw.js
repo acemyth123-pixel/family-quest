@@ -1,4 +1,4 @@
-const CACHE='family-quest-v02384';
+const CACHE='family-quest-v02385';
 const CORE=['./','./styles.v0224.css','./starter.v0225.css','./starter.v0226.css','./starter.v0227.css','./starter.v0230.css','./starter.v0231.css','./starter.v0233.css','./starter.v0236.css','./starter.v0237.css','./starter.v0238.css','./app.v0222.js','./patch.v0224.js','./patch.v0225.js','./patch.v0226.js','./patch.v0227.js','./patch.v0230.js','./patch.v0231.js','./patch.v0232.js','./patch.v02382.js','./patch.v02384.js','./auth.v0222.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
