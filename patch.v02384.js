@@ -1,6 +1,6 @@
-/* Family Quest v0.23.8.6 — single-owner Admin tabs with direct button handlers */
+/* Family Quest v0.23.8.7 — single-owner Admin tabs + optional repeat chore controls */
 (function(){
-  const BUILD='v0.23.8.6';
+  const BUILD='v0.23.8.7';
   state.adminMainTab02384=state.adminMainTab02384||'chore';
   state.adminChoreTab02384=state.adminChoreTab02384||'Daily';
   state.adminAchievementTab02384=state.adminAchievementTab02384||'Visible';
@@ -29,6 +29,51 @@
     b.ontouchend=function(e){e.preventDefault();e.stopPropagation();onPress();};
     return b;
   }
+
+  /* Repeatable quests stay visibly completed for the period, but the optional
+     extra attempt uses the normal Claim / Complete language instead of
+     "Complete Again" and never turns the finished accomplishment back into an
+     unfinished obligation. The RPC creates the optional live instance only
+     when the user actually chooses to act on it. */
+  const priorChoreCard02387=choreCard;
+  choreCard=function(c){
+    let html=priorChoreCard02387(c);
+    if(!c?.completedThisPeriod||!c?.allowMultiple||String(c.type)==='One-Off')return html;
+    const mine=owner(c)===state.currentUser;
+    const replacement=mine
+      ?`<button class="primary" data-action="chore-repeat-optional" data-mode="complete" data-definition="${c.definitionId||c.id}">Complete</button>`
+      :`<button class="ghost" data-action="chore-repeat-optional" data-mode="claim" data-definition="${c.definitionId||c.id}">Claim</button>`;
+    return html.replace(/<button class="primary" data-action="chore-repeat" data-id="[^"]+">Complete Again<\/button>/,replacement);
+  };
+
+  async function startOptionalRepeat(btn){
+    if(!(window.FQAuth?.realSession&&window.FQAuth?.client))return;
+    if(btn.dataset.busy==='1')return;
+    btn.dataset.busy='1';btn.disabled=true;
+    try{
+      const {data:iid,error}=await window.FQAuth.client.rpc('create_repeat_completion',{p_definition_id:btn.dataset.definition});
+      if(error)throw error;
+      await loadRealChores();
+      const c=(state.chores||[]).find(x=>String(x.id)===String(iid))||(state.chores||[]).find(x=>String(x.definitionId||x.id)===String(btn.dataset.definition)&&x.status==='Open'&&owner(x)===state.currentUser);
+      if(btn.dataset.mode==='complete'){
+        if(!c)throw new Error('Optional repeat was created, but its quest card could not be loaded.');
+        realCompleteChore(c);
+      }else{
+        toast('Quest claimed.');
+        render();
+      }
+    }catch(err){
+      console.error(err);toast(err?.message||'Could not open the optional repeat.');
+      btn.disabled=false;btn.dataset.busy='0';
+    }
+  }
+
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest?.('button[data-action="chore-repeat-optional"]');
+    if(!btn)return;
+    e.preventDefault();e.stopPropagation();
+    startOptionalRepeat(btn);
+  },true);
 
   function apply(){
     if(state.view!=='admin')return;
