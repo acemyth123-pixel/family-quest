@@ -1,88 +1,169 @@
-/* Family Quest v0.23.8.2 — direct Admin filtering + profile header placement */
+/* Family Quest v0.23.8.3 — consolidated monthly bills + Admin tabs + profile header */
 (function(){
-  state.adminCatalogTab0238 = state.adminCatalogTab0238 || 'chore';
-  state.adminChoreSubtab0238 = state.adminChoreSubtab0238 || 'Daily';
-  state.adminAchievementSubtab0238 = state.adminAchievementSubtab0238 || 'Visible';
+  const BUILD='v0.23.8.3';
+  state.adminMainTab02383=state.adminMainTab02383||'chore';
+  state.adminChoreTab02383=state.adminChoreTab02383||'Daily';
+  state.adminAchievementTab02383=state.adminAchievementTab02383||'Visible';
 
+  function setBadge(){
+    const b=document.getElementById('buildBadge');
+    if(b) b.textContent=BUILD;
+  }
+
+  const priorChoreLoader=window.FQLoaders?.chores;
+  async function loadChores02383(){
+    if(priorChoreLoader) await priorChoreLoader();
+    if(!(window.FQAuth?.realSession&&window.FQAuth?.profile?.household_id)) return;
+    const {data,error}=await window.FQAuth.client.from('chore_definitions')
+      .select('id,amount_due_cents,amount_due_note')
+      .eq('household_id',window.FQAuth.profile.household_id);
+    if(error) return;
+    const map=new Map((data||[]).map(x=>[String(x.id),x]));
+    (state.chores||[]).forEach(c=>{
+      const row=map.get(String(c.definitionId||c.id));
+      c.amountDueCents=row?.amount_due_cents??null;
+      c.amountDueNote=row?.amount_due_note||'';
+    });
+  }
+  if(window.FQLoaders){window.FQLoaders.chores=loadChores02383;loadRealChores=loadChores02383;}
+
+  const priorChoreCard=choreCard;
+  choreCard=function(c){
+    let html=priorChoreCard(c);
+    if(String(c.type)==='Monthly'&&c.amountDueCents!=null){
+      const amount=(Number(c.amountDueCents)/100).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+      const box=`<div class="bill-due-box"><span>💵 AMOUNT DUE</span><strong>$${amount}</strong>${c.amountDueNote?`<small>${esc(c.amountDueNote)}</small>`:''}</div>`;
+      html=html.replace('<div class="quest-meta">',box+'<div class="quest-meta">');
+    }
+    return html;
+  };
+
+  const priorEditor=openAdminEditor;
+  openAdminEditor=function(type,id=null){
+    priorEditor(type,id);
+    if(type!=='chore') return;
+    const o=id?(state.chores||[]).find(x=>String(x.id)===String(id)):null;
+    const body=document.querySelector('#adminEditorBody .form-grid');
+    const typeSel=document.getElementById('aeType');
+    if(!body||document.getElementById('aeAmountDue')) return;
+    body.insertAdjacentHTML('beforeend',`<div class="full monthly-bill-fields" id="monthlyBillFields02383"><h4>💵 Monthly Bill Details <span class="muted">(optional)</span></h4><div class="grid two"><label>Amount Due ($)<input id="aeAmountDue" type="number" min="0" step="0.01" placeholder="e.g. 1250.00" value="${o?.amountDueCents!=null?(Number(o.amountDueCents)/100).toFixed(2):''}"></label><label>Amount Note<input id="aeAmountNote" placeholder="e.g. Rent, Electric, Minimum payment" value="${esc(o?.amountDueNote||'')}"></label></div></div>`);
+    const sync=()=>{const f=document.getElementById('monthlyBillFields02383');if(f)f.hidden=typeSel?.value!=='Monthly';};
+    typeSel?.addEventListener('change',sync);sync();
+  };
+
+  const form=document.getElementById('adminEditorForm');
+  form?.addEventListener('submit',async e=>{
+    if(state.editing?.type!=='chore'||!realChoresEnabled()) return;
+    e.preventDefault();e.stopImmediatePropagation();
+    const o=state.editing.id?(state.chores||[]).find(x=>String(x.id)===String(state.editing.id)):null;
+    const type=document.getElementById('aeType')?.value||'Daily';
+    const ids=[...document.querySelectorAll('input[name="aeAssignees"]:checked')].map(x=>x.value);
+    const due=(type==='Monthly'||type==='One-Off')?(document.getElementById('aeDue')?.value||null):null;
+    const amountInput=document.getElementById('aeAmountDue');
+    const amount=type==='Monthly'&&amountInput&&amountInput.value!==''?Math.round(Number(amountInput.value)*100):null;
+    const {error}=await window.FQAuth.client.rpc('save_chore_definition_v0238',{
+      p_id:o?.definitionId||o?.id||null,
+      p_title:document.getElementById('aeTitle')?.value.trim()||'',
+      p_category:o?.category||'Other',
+      p_frequency:frequencyValue(type),
+      p_assigned_user_ids:ids,
+      p_xp:Number(document.getElementById('aeXp')?.value||0),
+      p_bounty_cents:Math.round(Number(document.getElementById('aeBounty')?.value||0)*100),
+      p_due_at:due,
+      p_expectations:(document.getElementById('aeDetails')?.value||'').split('\n').map(x=>x.trim()).filter(Boolean),
+      p_active:o?.active!==false,
+      p_allow_multiple:document.getElementById('aeMultiple')?.value==='true',
+      p_failure_penalty_rp:Number(document.getElementById('aePenalty')?.value||0),
+      p_amount_due_cents:amount,
+      p_amount_due_note:type==='Monthly'?(document.getElementById('aeAmountNote')?.value||null):null
+    });
+    if(error){toast(error.message);return;}
+    document.getElementById('adminEditor')?.close();toast('Chore saved.');
+    await loadChores02383();render();
+  },true);
+
+  function sectionName(section){return (section?.querySelector('h3')?.textContent||'').trim();}
   function managementCard(){
-    const root=document.getElementById('view'); if(!root) return null;
-    return [...root.querySelectorAll('.card')].find(c=>{
-      const labels=[...c.querySelectorAll('.section-title h3')].map(h=>(h.textContent||'').trim());
-      return labels.includes('Chores')&&labels.includes('Rewards')&&labels.includes('Achievements');
+    const root=document.getElementById('view');if(!root)return null;
+    return [...root.querySelectorAll('.card')].find(card=>{
+      const names=[...card.querySelectorAll('.section-title')].map(sectionName);
+      return names.includes('Chores')&&names.includes('Rewards')&&names.includes('Achievements');
     })||null;
   }
-  function sectionByName(card,name){return [...card.querySelectorAll('.section-title')].find(s=>(s.querySelector('h3')?.textContent||'').trim()===name)||null}
+  function section(card,name){return [...card.querySelectorAll('.section-title')].find(x=>sectionName(x)===name)||null;}
+  function setShown(el,show){if(!el)return;el.hidden=!show;el.style.display=show?'':'none';}
 
-  function applyAdmin02382(){
-    if(state.view!=='admin') return;
-    const card=managementCard(); if(!card) return;
-    card.querySelectorAll('.admin-catalog-tabs-v236,.admin-catalog-tabs-v238,.admin-subtabs-0238').forEach(x=>x.remove());
-    let top=card.querySelector('.admin-main-tabs-02382');
-    if(!top){top=document.createElement('div');top.className='tabs admin-main-tabs-02382';card.prepend(top)}
-    top.innerHTML=[['chore','⚔️ Chores'],['reward','🎁 Rewards'],['achievement','🏆 Achievements'],['cosmetic','🎨 Cosmetic Pricing']].map(([id,label])=>`<button type="button" class="ghost ${state.adminCatalogTab0238===id?'active':''}" data-admin-main-02382="${id}">${label}</button>`).join('');
+  function applyAdminTabs(){
+    if(state.view!=='admin')return;
+    const card=managementCard();if(!card)return;
+    card.querySelectorAll('.admin-catalog-tabs,.admin-catalog-tabs-v236,.admin-catalog-tabs-v238,.admin-main-tabs-02382,.admin-subtabs-0238,.admin-subtabs-02382,.admin-main-tabs-02383,.admin-subtabs-02383').forEach(x=>x.remove());
+
+    const top=document.createElement('div');top.className='tabs admin-main-tabs-02383';
+    top.innerHTML=[['chore','⚔️ Chores'],['reward','🎁 Rewards'],['achievement','🏆 Achievements'],['cosmetic','🎨 Cosmetic Pricing']]
+      .map(([id,label])=>`<button type="button" class="ghost ${state.adminMainTab02383===id?'active':''}" data-admin-main-02383="${id}">${label}</button>`).join('');
+    card.prepend(top);
 
     const defs=[['chore','Chores'],['reward','Rewards'],['cosmetic','Cosmetic Shop Pricing'],['achievement','Achievements']];
     defs.forEach(([id,name])=>{
-      const h=sectionByName(card,name), list=h?.nextElementSibling;
-      if(!h||!list)return;
-      const show=state.adminCatalogTab0238===id;
-      h.hidden=!show; list.hidden=!show;
-      h.style.display=show?'flex':'none'; list.style.display=show?'':'none';
+      const head=section(card,name),list=head?.nextElementSibling;
+      const show=state.adminMainTab02383===id;
+      setShown(head,show);setShown(list,show);
     });
+
     const actions=[...card.children].find(x=>x.classList?.contains('action-row'));
     if(actions){
-      [...actions.children].forEach(b=>{
-        const type=b.dataset.type;
-        b.style.display=(type==='chore'&&state.adminCatalogTab0238==='chore')||(type==='achievement'&&state.adminCatalogTab0238==='achievement')?'':'none';
+      [...actions.children].forEach(btn=>{
+        const t=btn.dataset.type;
+        btn.style.display=(t==='chore'&&state.adminMainTab02383==='chore')||(t==='achievement'&&state.adminMainTab02383==='achievement')?'':'none';
       });
     }
 
-    if(state.adminCatalogTab0238==='chore'){
-      const h=sectionByName(card,'Chores'), list=h?.nextElementSibling;
-      if(h&&list){
-        const sub=document.createElement('div'); sub.className='tabs admin-subtabs-02382';
-        sub.innerHTML=['Daily','Weekly','Monthly','Seasonal'].map(x=>`<button type="button" class="ghost ${state.adminChoreSubtab0238===x?'active':''}" data-admin-chore-sub-02382="${x}">${x}</button>`).join('');
-        h.after(sub);
-        const rows=[...list.children];
-        rows.forEach((row,i)=>{const c=(state.chores||[])[i];const show=!c||String(c.type)===state.adminChoreSubtab0238;row.hidden=!show;row.style.display=show?'':'none'});
+    if(state.adminMainTab02383==='chore'){
+      const head=section(card,'Chores');const list=head?.nextElementSibling;
+      if(head&&list){
+        const sub=document.createElement('div');sub.className='tabs admin-subtabs-02383';
+        sub.innerHTML=['Daily','Weekly','Monthly','Seasonal'].map(x=>`<button type="button" class="ghost ${state.adminChoreTab02383===x?'active':''}" data-admin-chore-02383="${x}">${x}</button>`).join('');
+        head.after(sub);
+        [...list.children].forEach((row,i)=>{const item=(state.chores||[])[i];const show=!!item&&String(item.type)===state.adminChoreTab02383;setShown(row,show);});
       }
     }
-    if(state.adminCatalogTab0238==='achievement'){
-      const h=sectionByName(card,'Achievements'), list=h?.nextElementSibling;
-      if(h&&list){
-        const sub=document.createElement('div'); sub.className='tabs admin-subtabs-02382';
-        sub.innerHTML=['Visible','Secret'].map(x=>`<button type="button" class="ghost ${state.adminAchievementSubtab0238===x?'active':''}" data-admin-ach-sub-02382="${x}">${x}</button>`).join('');
-        h.after(sub);
-        const rows=[...list.children];
-        rows.forEach((row,i)=>{const a=(state.achievements||[])[i];const secret=!!(a?.hidden||a?.secret);const show=state.adminAchievementSubtab0238==='Secret'?secret:!secret;row.hidden=!show;row.style.display=show?'':'none'});
+
+    if(state.adminMainTab02383==='achievement'){
+      const head=section(card,'Achievements');const list=head?.nextElementSibling;
+      if(head&&list){
+        const sub=document.createElement('div');sub.className='tabs admin-subtabs-02383';
+        sub.innerHTML=['Visible','Secret'].map(x=>`<button type="button" class="ghost ${state.adminAchievementTab02383===x?'active':''}" data-admin-ach-02383="${x}">${x}</button>`).join('');
+        head.after(sub);
+        [...list.children].forEach((row,i)=>{const item=(state.achievements||[])[i];const secret=!!(item?.hidden||item?.secret);const show=state.adminAchievementTab02383==='Secret'?secret:!secret;setShown(row,show);});
       }
     }
   }
 
-  function moveProfile02382(){
-    if(state.view!=='profiles') return;
-    const shell=document.querySelector('.fq-player-shell'); if(!shell) return;
+  function moveProfileControls(){
+    const top=document.querySelector('.topbar>div:first-child');
+    if(!top)return;
+    top.querySelectorAll('.profile-top-control-row,.profile-top-control-row-02382,.profile-top-control-row-02383').forEach(x=>x.remove());
+    if(state.view!=='profiles'||!state.profilePlayerId)return;
+    const shell=document.querySelector('.fq-player-shell');const title=document.getElementById('viewTitle');
+    if(!shell||!title)return;
     const back=shell.querySelector('.fq-profile-back,[data-action="profile-back-232"]');
     const custom=shell.querySelector('.fq-profile-customize,[data-action="profile-open"]');
-    const top=document.querySelector('.topbar>div:first-child');
-    const title=document.getElementById('viewTitle');
-    if(!top||!title||(!back&&!custom)) return;
-    let row=top.querySelector('.profile-top-control-row-02382');
-    if(!row){row=document.createElement('div');row.className='profile-top-control-row-02382';top.appendChild(row)}
-    if(back) row.appendChild(back);
-    row.appendChild(title);
-    if(custom) row.appendChild(custom);
+    if(!back&&!custom)return;
+    const row=document.createElement('div');row.className='profile-top-control-row-02383';
+    if(back)row.appendChild(back);row.appendChild(title);if(custom)row.appendChild(custom);
+    top.appendChild(row);
   }
 
   const priorRender=render;
-  render=function(){priorRender();setTimeout(()=>{applyAdmin02382();moveProfile02382()},0)};
-  const view=document.getElementById('view');
-  if(view){new MutationObserver(()=>{if(state.view==='admin')applyAdmin02382();else if(state.view==='profiles')moveProfile02382()}).observe(view,{childList:true,subtree:false})}
+  render=function(){priorRender();queueMicrotask(()=>{applyAdminTabs();moveProfileControls();setBadge();});};
+
   document.addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b)return;
-    if(b.dataset.adminMain02382){e.preventDefault();e.stopImmediatePropagation();state.adminCatalogTab0238=b.dataset.adminMain02382;applyAdmin02382()}
-    else if(b.dataset.adminChoreSub02382){e.preventDefault();e.stopImmediatePropagation();state.adminChoreSubtab0238=b.dataset.adminChoreSub02382;applyAdmin02382()}
-    else if(b.dataset.adminAchSub02382){e.preventDefault();e.stopImmediatePropagation();state.adminAchievementSubtab0238=b.dataset.adminAchSub02382;applyAdmin02382()}
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.adminMain02383){e.preventDefault();e.stopImmediatePropagation();state.adminMainTab02383=b.dataset.adminMain02383;applyAdminTabs();}
+    else if(b.dataset.adminChore02383){e.preventDefault();e.stopImmediatePropagation();state.adminChoreTab02383=b.dataset.adminChore02383;applyAdminTabs();}
+    else if(b.dataset.adminAch02383){e.preventDefault();e.stopImmediatePropagation();state.adminAchievementTab02383=b.dataset.adminAch02383;applyAdminTabs();}
   },true);
-  window.addEventListener('load',()=>setTimeout(()=>{applyAdmin02382();moveProfile02382()},350));
+
+  window.addEventListener('load',()=>setTimeout(()=>{applyAdminTabs();moveProfileControls();setBadge();},250));
+  setBadge();
 })();
