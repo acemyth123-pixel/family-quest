@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Family Quest",
   "short_name": "Family Quest",
-  "start_url": "./app-0236.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#10131a",
