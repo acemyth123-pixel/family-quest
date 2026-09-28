@@ -23,7 +23,7 @@
   }
   const priorCard=choreCard;
   choreCard=function(c){
-    if(c?.allowMultiple){
+    if(c?.allowMultiple&&c.type==='Monthly'){
       const uid=window.FQAuth?.profile?.user_id;
       const mine=(c.approvedCompletions||[]).some(x=>String(x.completed_by)===String(uid)&&inPeriod(c,x));
       const saved=c.completedThisPeriod;c.completedThisPeriod=mine;
