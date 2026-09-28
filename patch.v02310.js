@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.10 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.10';
+  const BUILD='v0.23.10.11';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -32,14 +32,26 @@
     return priorCard(c);
   };
 
+  async function optimizeChorePhoto023111(file){
+    if(!file)return null;
+    if(!/^image\/(jpeg|png|webp|gif|heic|heif)$/i.test(file.type||'')&&!/\.(jpe?g|png|webp|gif|heic|heif)$/i.test(file.name||''))throw new Error('Please choose a photo.');
+    if(file.size<=2*1024*1024&&/^image\/(jpeg|png|webp)$/i.test(file.type||''))return file;
+    const bitmap=await createImageBitmap(file);
+    const maxSide=1920,scale=Math.min(1,maxSide/Math.max(bitmap.width,bitmap.height));
+    const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+    canvas.getContext('2d',{alpha:false}).drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.82));
+    if(!blob)throw new Error('Could not optimize this photo.');
+    if(blob.size>5*1024*1024)throw new Error('Photo is still too large after optimization. Please choose a smaller image.');
+    return new File([blob],(file.name||'reference-photo').replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'});
+  }
   async function uploadChoreReferencePhoto023107(file,definitionId){
     if(!file)return null;
-    if(!/^image\/(jpeg|png|webp|gif)$/i.test(file.type||''))throw new Error('Reference photo must be JPG, PNG, WebP, or GIF.');
-    if(file.size>5*1024*1024)throw new Error('Reference photo must be 5 MB or smaller.');
-    const ext=((file.name||'photo.jpg').split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+    const optimized=await optimizeChorePhoto023111(file);
+    const ext=((optimized.name||'photo.jpg').split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
     const hid=window.FQAuth?.profile?.household_id,uid=window.FQAuth?.profile?.user_id;
     const path=`${hid}/${definitionId}/${uid}-${Date.now()}.${ext}`;
-    const {error}=await window.FQAuth.client.storage.from('chore-reference-photos').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+    const {error}=await window.FQAuth.client.storage.from('chore-reference-photos').upload(path,optimized,{cacheControl:'3600',upsert:false,contentType:optimized.type});
     if(error)throw error;
     return window.FQAuth.client.storage.from('chore-reference-photos').getPublicUrl(path).data.publicUrl;
   }
