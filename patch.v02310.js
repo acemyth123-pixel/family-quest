@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.4 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.5 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.4';
+  const BUILD='v0.23.10.5';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -82,6 +82,11 @@
       if(grid?.classList.contains('grid'))grid.classList.remove('two');
     }
   }
+
+  function applyQuickAddVisibility023105(){const b=document.querySelector('.top-actions [data-action="quick-open"]');if(b)b.style.display=state.view==='home'?'':'none';}
+  async function loadHouseholdReminderThreshold023105(){if(!window.FQAuth?.realSession||!isAdmin())return;const {data,error}=await window.FQAuth.client.rpc('get_household_chore_reminder_threshold');if(!error&&data)state.householdReminderThreshold023105=String(data).slice(0,5);}
+  async function saveHouseholdReminderThreshold023105(){const el=document.getElementById('fqHouseholdReminderThreshold023105');if(!el?.value)return;const {data,error}=await window.FQAuth.client.rpc('set_household_chore_reminder_threshold',{p_time:el.value});if(error){toast(error.message);return}state.householdReminderThreshold023105=String(data||el.value).slice(0,5);toast('Chore reminder time saved.');await loadAdminOverdueChores();render();}
+  function addOverdueThresholdControl023105(){if(state.view!=='admin'||!isAdmin())return;const panel=document.querySelector('#view .overdue-panel');if(!panel||panel.querySelector('#fqHouseholdReminderThreshold023105'))return;const p=panel.querySelector('p.muted'),wrap=document.createElement('div');wrap.className='form-grid';wrap.innerHTML=`<label>Daily / Weekly reminder time<input id="fqHouseholdReminderThreshold023105" type="time" value="${state.householdReminderThreshold023105||'18:00'}"></label><div class="action-row"><button type="button" class="primary" data-action="overdue-threshold-save-023105">Save Time</button></div><p class="muted full">Daily and Weekly quests appear here at this time so Admin can send a reminder, but they are not failed or late until midnight. Monthly and One-Off quests appear after their actual due date/time and remain until completed.</p>`;if(p)p.replaceWith(wrap);else panel.querySelector('.section-title')?.after(wrap);}
 
   async function loadReminderSettings(){
     if(!window.FQAuth?.realSession)return;
@@ -173,9 +178,10 @@
     }
   }
 
+  document.addEventListener('click',e=>{const b=e.target.closest?.('[data-action="overdue-threshold-save-023105"]');if(b){e.preventDefault();e.stopPropagation();saveHouseholdReminderThreshold023105();}},true);
   document.addEventListener('click',e=>{const b=e.target.closest?.('[data-action="reminders-save-02310"]');if(b){e.preventDefault();saveReminders();}},true);
   const prevRender=render;
-  render=function(){prevRender();queueMicrotask(()=>{setBadge();addReminderSettings();applyAdmin();refreshHome023102()});if(state.view==='profiles'&&state.profilePlayerId&&!state.reminderSettings02310)loadReminderSettings().then(()=>{if(state.view==='profiles'){addReminderSettings();}});if(state.view==='admin'){[80,300,800].forEach(ms=>setTimeout(applyAdmin,ms));}};
-  window.addEventListener('load',()=>{setBadge();setTimeout(()=>{addReminderSettings();applyAdmin();refreshHome023102()},500)});
+  render=function(){prevRender();queueMicrotask(()=>{setBadge();applyQuickAddVisibility023105();addReminderSettings();applyAdmin();addOverdueThresholdControl023105();refreshHome023102()});if(state.view==='profiles'&&state.profilePlayerId&&!state.reminderSettings02310)loadReminderSettings().then(()=>{if(state.view==='profiles'){addReminderSettings();}});if(state.view==='admin'){loadHouseholdReminderThreshold023105().then(addOverdueThresholdControl023105);[80,300,800].forEach(ms=>setTimeout(()=>{applyAdmin();addOverdueThresholdControl023105();},ms));}};
+  window.addEventListener('load',()=>{setBadge();setTimeout(()=>{applyQuickAddVisibility023105();loadHouseholdReminderThreshold023105();addReminderSettings();applyAdmin();addOverdueThresholdControl023105();refreshHome023102()},500)});
   setBadge();
 })();
