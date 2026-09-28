@@ -1,6 +1,6 @@
 /* Family Quest v0.23.9.0 — single-owner Admin tabs + optional repeat chore controls */
 (function(){
-  const BUILD='v0.23.8.7';
+  const BUILD='v0.23.9.0';
   state.adminMainTab02384=state.adminMainTab02384||'chore';
   state.adminChoreTab02384=state.adminChoreTab02384||'Daily';
   state.adminAchievementTab02384=state.adminAchievementTab02384||'Visible';
@@ -76,7 +76,7 @@
   },true);
 
   function apply(){
-    if(state.view!=='admin')return;
+    if(state.view!=='admin'||window.FQAdmin02310)return;
     const card=managementCard();if(!card)return;
     card.querySelectorAll('.admin-catalog-tabs,.admin-catalog-tabs-v236,.admin-catalog-tabs-v238,.admin-main-tabs-02382,.admin-main-tabs-02383,.admin-main-tabs-02384,.admin-subtabs-0238,.admin-subtabs-02382,.admin-subtabs-02383,.admin-subtabs-02384').forEach(x=>x.remove());
 

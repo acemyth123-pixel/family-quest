@@ -5,3 +5,14 @@
 .admin-main-tabs-02383,.admin-subtabs-02383{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}.admin-main-tabs-02383 button,.admin-subtabs-02383 button{padding:9px 14px}.admin-main-tabs-02383 button.active,.admin-subtabs-02383 button.active{border-color:#7b68ff;background:linear-gradient(135deg,#7558ff,#5637d8);color:#fff}
 .profile-top-control-row-02383{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;width:100%;margin-top:4px}.profile-top-control-row-02383 #viewTitle{text-align:center;white-space:nowrap;margin:0}.profile-top-control-row-02383 .fq-profile-back{position:static!important;inset:auto!important;justify-self:start}.profile-top-control-row-02383 .fq-profile-customize{position:static!important;inset:auto!important;justify-self:end}
 @media(max-width:560px){.bill-due-box strong{font-size:21px}.profile-top-control-row-02383{gap:6px}.profile-top-control-row-02383 button{padding:8px 10px;font-size:13px}.profile-top-control-row-02383 #viewTitle{font-size:26px}.admin-main-tabs-02383,.admin-subtabs-02383{gap:6px}.admin-main-tabs-02383 button,.admin-subtabs-02383 button{padding:9px 11px}}
+
+
+/* Family Quest v0.23.10.0 — Admin organization + personal reminders */
+.fq-admin-area-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;position:relative;z-index:30}
+.fq-admin-area-tabs button,.fq-admin-inner-tabs-02310 button{padding:10px 14px}
+.fq-admin-area-tabs button.active,.fq-admin-inner-tabs-02310 button.active{border-color:#7b68ff;background:linear-gradient(135deg,#7558ff,#5637d8);color:#fff}
+.fq-admin-inner-tabs-02310{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+.fq-reminder-settings{margin-top:16px}
+.fq-reminder-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(220px,2fr) minmax(150px,1fr) minmax(140px,1fr);gap:12px;align-items:end;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.fq-reminder-row:last-of-type{border-bottom:0}.fq-reminder-toggle{align-self:center}
+@media(max-width:760px){.fq-reminder-row{grid-template-columns:1fr}.fq-admin-area-tabs{position:sticky;top:0;background:rgba(16,19,26,.96);padding:8px 0;z-index:40}}
