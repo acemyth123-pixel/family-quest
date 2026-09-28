@@ -62,35 +62,52 @@
     shell.insertAdjacentHTML('beforeend',reminderMarkup());
   }
 
-  function adminCards(){return [...document.querySelectorAll('#view > .card, #view > .grid > .card, #view .admin-section')];}
-  function findCard(name){return adminCards().find(c=>heading(c)===name)||null;}
   function managementCard(){return [...document.querySelectorAll('#view .card')].find(c=>[...c.querySelectorAll('.section-title h3')].some(h=>h.textContent.trim()==='Chores')&&[...c.querySelectorAll('.section-title h3')].some(h=>h.textContent.trim()==='Rewards'))||null;}
   function section(card,name){return [...(card?.querySelectorAll('.section-title')||[])].find(x=>(x.querySelector('h3')?.textContent||'').trim()===name)||null;}
   function listAfter(head){let n=head?.nextElementSibling;while(n&&!n.classList.contains('simple-list'))n=n.nextElementSibling;return n;}
+  function directCardByHeading(name){
+    return [...document.querySelectorAll('#view > .card,#view > .grid > .card')].find(c=>heading(c)===name)||null;
+  }
+  function placeAfter(anchor,node){if(anchor&&node&&anchor!==node)anchor.after(node);return node||anchor;}
   function applyAdmin(){
     if(state.view!=='admin')return;
     const view=document.getElementById('view');if(!view)return;
     let nav=document.getElementById('fqAdminAreaNav02310');
     if(!nav){nav=document.createElement('div');nav.id='fqAdminAreaNav02310';nav.className='tabs fq-admin-area-tabs';view.prepend(nav);}
-    const reviewCount=['realRewardApprovalPanel','realChoreApprovalPanel'].reduce((n,id)=>n+(document.querySelectorAll(`#${id} .simple-item`).length||0),0)+(findCard('Failed Quest Review')?.querySelectorAll('.simple-item').length||0);
+
+    const failed=document.querySelector('#view .failed-panel');
+    const member=document.getElementById('realMembershipPanel');
+    const choreApproval=document.getElementById('realChoreApprovalPanel');
+    const rewardApproval=document.getElementById('realRewardApprovalPanel');
+    const overdue=document.querySelector('#view .overdue-panel');
+    const grocery=directCardByHeading('Grocery Quest Settings');
+    const season=directCardByHeading('Season Controls');
+    const legacy=directCardByHeading('Approval Queue');
+    const m=managementCard();
+
+    if(legacy)show(legacy,false);
+    const reviewCount=(choreApproval?.querySelectorAll('.simple-item').length||0)+(rewardApproval?.querySelectorAll('.simple-item').length||0)+(failed?.querySelectorAll('.simple-item').length||0);
     nav.innerHTML='';
     [['review',`📥 Review${reviewCount?` (${reviewCount})`:''}`],['quests','⚔️ Quests'],['household','👨‍👩‍👧‍👦 Household'],['manage','🎛️ Manage']].forEach(([id,label])=>nav.appendChild(btn(label,state.adminArea02310===id,()=>{state.adminArea02310=id;applyAdmin()})));
 
-    const reviewNames=new Set(['Reward Approval Queue','Real Chore Approval Queue','Failed Quest Review']);
-    const questNames=new Set(['Overdue Chores','Grocery Quest Settings']);
-    const householdNames=new Set(['Household Members','Season Controls']);
-    adminCards().forEach(c=>{
-      if(c===nav||c.id==='fqAdminAreaNav02310')return;
-      const h=heading(c);
-      if(h==='Approval Queue'){show(c,false);return;}
-      if(reviewNames.has(h))show(c,state.adminArea02310==='review');
-      else if(questNames.has(h))show(c,state.adminArea02310==='quests');
-      else if(householdNames.has(h)||c.id==='realMembershipPanel')show(c,state.adminArea02310==='household');
-    });
+    [failed,choreApproval,rewardApproval].forEach(x=>show(x,state.adminArea02310==='review'));
+    [overdue,grocery].forEach(x=>show(x,state.adminArea02310==='quests'));
+    [member,season].forEach(x=>show(x,state.adminArea02310==='household'));
+    if(m)show(m,state.adminArea02310==='quests'||state.adminArea02310==='manage');
 
-    const m=managementCard();if(!m)return;
-    show(m,state.adminArea02310==='quests'||state.adminArea02310==='manage');
-    m.querySelectorAll('.admin-main-tabs-02384,.admin-subtabs-02384,.fq-admin-inner-tabs-02310').forEach(x=>x.remove());
+    let anchor=nav;
+    if(state.adminArea02310==='review'){
+      anchor=placeAfter(anchor,choreApproval);anchor=placeAfter(anchor,rewardApproval);anchor=placeAfter(anchor,failed);
+    }else if(state.adminArea02310==='quests'){
+      anchor=placeAfter(anchor,overdue);anchor=placeAfter(anchor,grocery);anchor=placeAfter(anchor,m);
+    }else if(state.adminArea02310==='household'){
+      anchor=placeAfter(anchor,member);anchor=placeAfter(anchor,season);
+    }else if(state.adminArea02310==='manage'){
+      anchor=placeAfter(anchor,m);
+    }
+
+    if(!m)return;
+    m.querySelectorAll('.admin-catalog-tabs,.admin-catalog-tabs-v236,.admin-catalog-tabs-v238,.admin-main-tabs-02382,.admin-main-tabs-02383,.admin-main-tabs-02384,.admin-subtabs-0238,.admin-subtabs-02382,.admin-subtabs-02383,.admin-subtabs-02384,.fq-admin-inner-tabs-02310').forEach(x=>x.remove());
     const heads={chore:section(m,'Chores'),reward:section(m,'Rewards'),achievement:section(m,'Achievements'),cosmetic:section(m,'Cosmetic Shop Pricing')};
     const action=[...m.children].find(x=>x.classList?.contains('action-row'));
     if(state.adminArea02310==='quests'){
