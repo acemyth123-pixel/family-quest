@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.1 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.2 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.1';
+  const BUILD='v0.23.10.2';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -31,6 +31,43 @@
     }
     return priorCard(c);
   };
+
+  function homeQuestIsOutstanding(c,u){
+    if(!c||c.active===false||c.status!=='Open')return false;
+    if(owner(c)!==u.name)return false;
+    // Repeatable chores can keep an optional open instance after a successful
+    // completion. That optional extra attempt is not an outstanding obligation.
+    if(c.allowMultiple&&c.completedThisPeriod)return false;
+    return true;
+  }
+  function upcomingHomeEvents(){
+    const now=Date.now();
+    return (state.events||[]).filter(e=>{
+      const end=new Date(e.end||e.start).getTime();
+      return Number.isFinite(end)&&end>=now;
+    }).sort((a,b)=>new Date(a.start)-new Date(b.start)).slice(0,5);
+  }
+  function refreshHome023102(){
+    if(state.view!=='home')return;
+    const u=currentUser(),open=(state.chores||[]).filter(c=>homeQuestIsOutstanding(c,u));
+    const openStat=[...document.querySelectorAll('#view [data-view-jump="chores"].quick-stat')][0];
+    if(openStat){
+      const v=openStat.querySelector('.value'),s=openStat.querySelector('.sub');
+      if(v)v.textContent=String(open.length);
+      if(s)s.textContent='Assigned or claimed';
+    }
+    // Up Next duplicated the Quest Log and made the whole card vulnerable to
+    // late-render click-through. Remove it; Open Quests is the single route.
+    const upNext=[...document.querySelectorAll('#view .card')].find(x=>(x.querySelector('.section-title h3')?.textContent||'').includes('Up Next'));
+    if(upNext)upNext.remove();
+    const upcoming=[...document.querySelectorAll('#view .card')].find(x=>(x.querySelector('.section-title h3')?.textContent||'').includes('Upcoming'));
+    if(upcoming){
+      const list=upcoming.querySelector('.simple-list'),events=upcomingHomeEvents();
+      if(list)list.innerHTML=events.length?events.map(eventCard).join(''):'<div class="empty">Nothing upcoming.</div>';
+      const grid=upcoming.parentElement;
+      if(grid?.classList.contains('grid'))grid.classList.remove('two');
+    }
+  }
 
   async function loadReminderSettings(){
     if(!window.FQAuth?.realSession)return;
@@ -124,7 +161,7 @@
 
   document.addEventListener('click',e=>{const b=e.target.closest?.('[data-action="reminders-save-02310"]');if(b){e.preventDefault();saveReminders();}},true);
   const prevRender=render;
-  render=function(){prevRender();queueMicrotask(()=>{setBadge();addReminderSettings();applyAdmin()});if(state.view==='profiles'&&state.profilePlayerId&&!state.reminderSettings02310)loadReminderSettings().then(()=>{if(state.view==='profiles'){addReminderSettings();}});if(state.view==='admin'){[80,300,800].forEach(ms=>setTimeout(applyAdmin,ms));}};
-  window.addEventListener('load',()=>{setBadge();setTimeout(()=>{addReminderSettings();applyAdmin()},500)});
+  render=function(){prevRender();queueMicrotask(()=>{setBadge();addReminderSettings();applyAdmin();refreshHome023102()});if(state.view==='profiles'&&state.profilePlayerId&&!state.reminderSettings02310)loadReminderSettings().then(()=>{if(state.view==='profiles'){addReminderSettings();}});if(state.view==='admin'){[80,300,800].forEach(ms=>setTimeout(applyAdmin,ms));}};
+  window.addEventListener('load',()=>{setBadge();setTimeout(()=>{addReminderSettings();applyAdmin();refreshHome023102()},500)});
   setBadge();
 })();
