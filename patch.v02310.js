@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.6 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.7 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.6';
+  const BUILD='v0.23.10.7';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -31,6 +31,34 @@
     }
     return priorCard(c);
   };
+
+  async function uploadChoreReferencePhoto023107(file,definitionId){
+    if(!file)return null;
+    if(!/^image\/(jpeg|png|webp|gif)$/i.test(file.type||''))throw new Error('Reference photo must be JPG, PNG, WebP, or GIF.');
+    if(file.size>5*1024*1024)throw new Error('Reference photo must be 5 MB or smaller.');
+    const ext=((file.name||'photo.jpg').split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+    const hid=window.FQAuth?.profile?.household_id,uid=window.FQAuth?.profile?.user_id;
+    const path=`${hid}/${definitionId}/${uid}-${Date.now()}.${ext}`;
+    const {error}=await window.FQAuth.client.storage.from('chore-reference-photos').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+    if(error)throw error;
+    return window.FQAuth.client.storage.from('chore-reference-photos').getPublicUrl(path).data.publicUrl;
+  }
+  const adminEditorForm023107=document.getElementById('adminEditorForm');
+  adminEditorForm023107?.addEventListener('submit',async e=>{
+    if(state.editing?.type!=='chore'||!window.FQAuth?.realSession)return;
+    const file=document.getElementById('aePhoto')?.files?.[0];
+    if(!file)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    const o=state.editing.id?state.chores.find(x=>String(x.id)===String(state.editing.id)):null;
+    try{
+      if(!o?.definitionId&&!o?.id)throw new Error('Save the chore once before adding its reference photo.');
+      const url=await uploadChoreReferencePhoto023107(file,o.definitionId||o.id);
+      const {error}=await window.FQAuth.client.from('chore_definitions').update({reference_photo_path:url}).eq('id',o.definitionId||o.id);
+      if(error)throw error;
+      toast('Reference photo saved.');
+    }catch(err){toast(err?.message||'Could not save reference photo.');return}
+    document.getElementById('aePhoto').value='';
+  },true);
 
   const priorRenderChores023104=renderChores;
   renderChores=function(){
