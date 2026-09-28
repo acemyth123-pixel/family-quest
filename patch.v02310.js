@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.3 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.4 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.3';
+  const BUILD='v0.23.10.4';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -30,6 +30,20 @@
       const html=priorCard(c);c.completedThisPeriod=saved;return html;
     }
     return priorCard(c);
+  };
+
+  const priorRenderChores023104=renderChores;
+  renderChores=function(){
+    const uid=window.FQAuth?.profile?.user_id;
+    const me=currentUser();
+    const rank=c=>{
+      const assigned=(c.assigneeIds||[]).some(id=>String(id)===String(uid))||owner(c)===me?.name;
+      const claimed=String(c.claimedById||c.claimed_by||'')===String(uid);
+      return assigned||claimed?0:1;
+    };
+    const original=state.chores;
+    state.chores=[...(original||[])].sort((a,b)=>rank(a)-rank(b));
+    try{return priorRenderChores023104()}finally{state.chores=original}
   };
 
   function homeQuestIsOutstanding(c,u){
