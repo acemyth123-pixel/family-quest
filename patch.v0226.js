@@ -4,7 +4,7 @@ state.questTab=state.questTab||'Daily';
 
 renderCosmeticPicker=function(){
  const u=currentUser(),owned=new Set(u.cosmeticUnlocks||[]),tab=state.profileCosmeticTab||'avatar';
- const defs={avatar:['profileAvatarId','Avatar','🧍'],frame:['profileFrameId','Frame','🖼️'],background:['profileBackgroundId','Background','🌌'],confetti:['profileConfettiId','Confetti','🎉']};
+ const defs={avatar:['profileAvatarId','Avatar','🧍'],background:['profileBackgroundId','Background','🌌'],confetti:['profileConfettiId','Confetti','🎉']};
  const [input,label,icon]=defs[tab]||defs.avatar;
  const selected=$('#'+input).value;
  const items=state.cosmeticCatalog.filter(x=>(x.type||'avatar')===tab&&(x.acquisition_method==='default'||owned.has(x.id)));
@@ -17,7 +17,7 @@ renderCosmeticPicker=function(){
    <div class="sprite-picker">${items.map(x=>`<button type="button" class="sprite-choice ${selected===x.id?'selected':''}" data-action="profile-cosmetic-select" data-input="${input}" data-cosmetic="${esc(x.id)}"><span class="sprite-choice-icon">${cosmeticPreview(x)}</span><strong>${esc(x.name)}</strong></button>`).join('')||'<div class="empty">No unlocked cosmetics in this category yet.</div>'}</div>
   </div>`;
  const preview=$('#profileCosmeticPreview');
- if(preview){const fake={...u,avatarId:$('#profileAvatarId').value,frameId:$('#profileFrameId').value,backgroundId:$('#profileBackgroundId').value};preview.innerHTML=profileShowcase(fake,'profile-dialog-preview')}
+ if(preview){const fake={...u,avatarId:$('#profileAvatarId').value,backgroundId:$('#profileBackgroundId').value};preview.innerHTML=profileShowcase(fake,'profile-dialog-preview')}
 };
 renderSpritePicker=function(){renderCosmeticPicker()};
 
