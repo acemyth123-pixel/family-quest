@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.2 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.3 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.2';
+  const BUILD='v0.23.10.3';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -37,7 +37,7 @@
     if(owner(c)!==u.name)return false;
     // Repeatable chores can keep an optional open instance after a successful
     // completion. That optional extra attempt is not an outstanding obligation.
-    if(c.allowMultiple&&c.completedThisPeriod)return false;
+    if(c.completedThisPeriod)return false;
     return true;
   }
   function upcomingHomeEvents(){
