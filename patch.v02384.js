@@ -1,4 +1,4 @@
-/* Family Quest v0.23.8.7 — single-owner Admin tabs + optional repeat chore controls */
+/* Family Quest v0.23.9.0 — single-owner Admin tabs + optional repeat chore controls */
 (function(){
   const BUILD='v0.23.8.7';
   state.adminMainTab02384=state.adminMainTab02384||'chore';
