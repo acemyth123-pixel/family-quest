@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.9 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.10 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.9';
+  const BUILD='v0.23.10.10';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -43,32 +43,37 @@
     if(error)throw error;
     return window.FQAuth.client.storage.from('chore-reference-photos').getPublicUrl(path).data.publicUrl;
   }
-  // Reference-photo saving is owned by the primary chore submit handler in patch.v0230.
-  // Intercept Save first, upload the selected file, then let that handler save the chore.
-  function bindReferencePhotoSave023109(){
-    const adminEditorForm023108=document.getElementById('adminEditorForm');
-    if(!adminEditorForm023108||adminEditorForm023108.dataset.photoSaveBound==='1')return;
-    adminEditorForm023108.dataset.photoSaveBound='1';
-    adminEditorForm023108.addEventListener('submit',async e=>{
-    if(state.editing?.type!=='chore'||!window.FQAuth?.realSession)return;
-    const file=document.getElementById('aePhoto')?.files?.[0];
-    if(!file)return;
-    e.preventDefault();e.stopImmediatePropagation();
-    const o=state.editing.id?state.chores.find(x=>String(x.id)===String(state.editing.id)):null;
-    try{
-      const did=o?.definitionId||o?.id;
-      if(!did)throw new Error('Save the chore once before adding its reference photo.');
-      const url=await uploadChoreReferencePhoto023107(file,did);
-      const {error}=await window.FQAuth.client.from('chore_definitions').update({reference_photo_path:url}).eq('id',did);
-      if(error)throw error;
-      // Persist the normal editor fields too by replaying Save without the file.
-      document.getElementById('aePhoto').value='';
-      adminEditorForm023108.requestSubmit();
-    }catch(err){toast(err?.message||'Could not save reference photo.');}
+  // Reference-photo upload is bound directly to the Save button so it runs
+  // before the older form-submit owner can close/re-render the editor.
+  function bindReferencePhotoSave023110(){
+    const form=document.getElementById('adminEditorForm');
+    const btn=form?.querySelector('button[type="submit"]');
+    if(!btn||btn.dataset.photoSaveBound==='1')return;
+    btn.dataset.photoSaveBound='1';
+    btn.addEventListener('click',async e=>{
+      if(state.editing?.type!=='chore'||!window.FQAuth?.realSession)return;
+      const input=document.getElementById('aePhoto'),file=input?.files?.[0];
+      if(!file)return;
+      e.preventDefault();e.stopImmediatePropagation();
+      const o=state.editing.id?state.chores.find(x=>String(x.id)===String(state.editing.id)):null;
+      try{
+        const did=o?.definitionId||o?.id;
+        if(!did)throw new Error('Save the chore once before adding its reference photo.');
+        btn.disabled=true;btn.textContent='Saving photo…';
+        const url=await uploadChoreReferencePhoto023107(file,did);
+        const {data,error}=await window.FQAuth.client.rpc('set_chore_reference_photo',{p_chore_id:did,p_photo_url:url});
+        if(error)throw error;
+        input.value='';
+        btn.disabled=false;btn.textContent='Save';
+        form.requestSubmit();
+      }catch(err){
+        btn.disabled=false;btn.textContent='Save';
+        toast(err?.message||'Could not save reference photo.');
+      }
     },true);
   }
-  bindReferencePhotoSave023109();
-  window.addEventListener('load',bindReferencePhotoSave023109);
+  bindReferencePhotoSave023110();
+  window.addEventListener('load',bindReferencePhotoSave023110);
 
   const priorRenderChores023104=renderChores;
   renderChores=function(){
