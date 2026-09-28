@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.5 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.6 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.5';
+  const BUILD='v0.23.10.6';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -23,7 +23,7 @@
   }
   const priorCard=choreCard;
   choreCard=function(c){
-    if(c?.allowMultiple&&c.type==='Monthly'){
+    if(c?.type==='Monthly'&&(c.assigneeIds||[]).length>1){
       const uid=window.FQAuth?.profile?.user_id;
       const mine=(c.approvedCompletions||[]).some(x=>String(x.completed_by)===String(uid)&&inPeriod(c,x));
       const saved=c.completedThisPeriod;c.completedThisPeriod=mine;
