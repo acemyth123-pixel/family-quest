@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.7 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.8 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.7';
+  const BUILD='v0.23.10.8';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -43,21 +43,25 @@
     if(error)throw error;
     return window.FQAuth.client.storage.from('chore-reference-photos').getPublicUrl(path).data.publicUrl;
   }
-  const adminEditorForm023107=document.getElementById('adminEditorForm');
-  adminEditorForm023107?.addEventListener('submit',async e=>{
+  // Reference-photo saving is owned by the primary chore submit handler in patch.v0230.
+  // Intercept Save first, upload the selected file, then let that handler save the chore.
+  const adminEditorForm023108=document.getElementById('adminEditorForm');
+  adminEditorForm023108?.addEventListener('submit',async e=>{
     if(state.editing?.type!=='chore'||!window.FQAuth?.realSession)return;
     const file=document.getElementById('aePhoto')?.files?.[0];
     if(!file)return;
     e.preventDefault();e.stopImmediatePropagation();
     const o=state.editing.id?state.chores.find(x=>String(x.id)===String(state.editing.id)):null;
     try{
-      if(!o?.definitionId&&!o?.id)throw new Error('Save the chore once before adding its reference photo.');
-      const url=await uploadChoreReferencePhoto023107(file,o.definitionId||o.id);
-      const {error}=await window.FQAuth.client.from('chore_definitions').update({reference_photo_path:url}).eq('id',o.definitionId||o.id);
+      const did=o?.definitionId||o?.id;
+      if(!did)throw new Error('Save the chore once before adding its reference photo.');
+      const url=await uploadChoreReferencePhoto023107(file,did);
+      const {error}=await window.FQAuth.client.from('chore_definitions').update({reference_photo_path:url}).eq('id',did);
       if(error)throw error;
-      toast('Reference photo saved.');
-    }catch(err){toast(err?.message||'Could not save reference photo.');return}
-    document.getElementById('aePhoto').value='';
+      // Persist the normal editor fields too by replaying Save without the file.
+      document.getElementById('aePhoto').value='';
+      adminEditorForm023108.requestSubmit();
+    }catch(err){toast(err?.message||'Could not save reference photo.');}
   },true);
 
   const priorRenderChores023104=renderChores;
