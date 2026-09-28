@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.8 — Admin organization, personal chore reminders, per-user repeat completion */
+/* Family Quest v0.23.10.9 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.8';
+  const BUILD='v0.23.10.9';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -45,8 +45,11 @@
   }
   // Reference-photo saving is owned by the primary chore submit handler in patch.v0230.
   // Intercept Save first, upload the selected file, then let that handler save the chore.
-  const adminEditorForm023108=document.getElementById('adminEditorForm');
-  adminEditorForm023108?.addEventListener('submit',async e=>{
+  function bindReferencePhotoSave023109(){
+    const adminEditorForm023108=document.getElementById('adminEditorForm');
+    if(!adminEditorForm023108||adminEditorForm023108.dataset.photoSaveBound==='1')return;
+    adminEditorForm023108.dataset.photoSaveBound='1';
+    adminEditorForm023108.addEventListener('submit',async e=>{
     if(state.editing?.type!=='chore'||!window.FQAuth?.realSession)return;
     const file=document.getElementById('aePhoto')?.files?.[0];
     if(!file)return;
@@ -62,7 +65,10 @@
       document.getElementById('aePhoto').value='';
       adminEditorForm023108.requestSubmit();
     }catch(err){toast(err?.message||'Could not save reference photo.');}
-  },true);
+    },true);
+  }
+  bindReferencePhotoSave023109();
+  window.addEventListener('load',bindReferencePhotoSave023109);
 
   const priorRenderChores023104=renderChores;
   renderChores=function(){
