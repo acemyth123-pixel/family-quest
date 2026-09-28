@@ -323,9 +323,9 @@ async function loadRealCurrentStats(){
 async function loadRealHouseholdMembers(){
  if(!(window.FQAuth?.realSession&&window.FQAuth?.profile?.household_id))return;
  const c=window.FQAuth.client,p=window.FQAuth.profile;
- const {data,error}=await c.from('profiles').select('user_id,display_name,role,active,title,selected_sprite_id,selected_confetti_id,selected_frame_id,selected_background_id').eq('household_id',p.household_id).eq('membership_status','active');
+ const {data,error}=await c.from('profiles').select('user_id,display_name,role,active,title,selected_sprite_id,selected_confetti_id,selected_background_id').eq('household_id',p.household_id).eq('membership_status','active');
  if(error)throw error;
- state.users=(data||[]).map(u=>{const old=state.users.find(x=>String(x.id)===String(u.user_id));return {id:u.user_id,name:u.display_name,role:u.role==='admin'?'Admin Parent':'Family Member',admin:u.role==='admin',active:u.active,title:u.title||'New Adventurer',avatarId:u.selected_sprite_id||'dog',confettiId:u.selected_confetti_id||'classic-confetti',frameId:u.selected_frame_id||'plain-frame',backgroundId:u.selected_background_id||'plain-background',xp:old?.xp||0,rp:old?.rp||0,streak:old?.streak||0,bestStreak:old?.bestStreak||0,lifetime:old?.lifetime||0,cosmeticUnlocks:old?.cosmeticUnlocks||[]}});
+ state.users=(data||[]).map(u=>{const old=state.users.find(x=>String(x.id)===String(u.user_id));return {id:u.user_id,name:u.display_name,role:u.role==='admin'?'Admin Parent':'Family Member',admin:u.role==='admin',active:u.active,title:u.title||'New Adventurer',avatarId:u.selected_sprite_id||'dog',confettiId:u.selected_confetti_id||'classic-confetti',backgroundId:u.selected_background_id||'plain-background',xp:old?.xp||0,rp:old?.rp||0,streak:old?.streak||0,bestStreak:old?.bestStreak||0,lifetime:old?.lifetime||0,cosmeticUnlocks:old?.cosmeticUnlocks||[]}});
  const me=state.users.find(u=>u.id===p.user_id); if(me){state.currentUser=me.name;state.achievementTarget=me.name}
 }
 async function loadRealChores(){
@@ -536,20 +536,19 @@ async function loadRealCosmetics(){
  const rows=unlocks.data||[];state.users.forEach(u=>{u.cosmeticUnlocks=rows.filter(x=>String(x.user_id)===String(u.id)).map(x=>x.sprite_id)});
 }
 async function purchaseCosmetic(id){const item=state.cosmeticCatalog.find(x=>x.id===id);if(!item)return;const {data,error}=await window.FQAuth.client.rpc('purchase_cosmetic',{p_cosmetic_id:id});if(error){toast(error.message);return}await window.FQAuth.refreshIdentity?.();await loadRealCosmetics();toast(`${data?.name||item.name} unlocked!`);render()}
-async function equipCosmetic(id){const x=cosmeticById(id);if(!x)return false;if(!spriteUnlocked(currentUser(),x)){toast('That cosmetic is still locked.');return false}const {data,error}=await window.FQAuth.client.rpc('equip_cosmetic',{p_cosmetic_id:id});if(error){toast(error.message);return false}const t=data?.cosmetic_type||x.type||'avatar';if(t==='avatar')currentUser().avatarId=id;else if(t==='confetti')currentUser().confettiId=id;else if(t==='frame')currentUser().frameId=id;else if(t==='background')currentUser().backgroundId=id;toast(`${data?.name||x.name} equipped.`);return true}
+async function equipCosmetic(id){const x=cosmeticById(id);if(!x)return false;if(!spriteUnlocked(currentUser(),x)){toast('That cosmetic is still locked.');return false}const {data,error}=await window.FQAuth.client.rpc('equip_cosmetic',{p_cosmetic_id:id});if(error){toast(error.message);return false}const t=data?.cosmetic_type||x.type||'avatar';if(t==='avatar')currentUser().avatarId=id;else if(t==='confetti')currentUser().confettiId=id;else if(t==='background')currentUser().backgroundId=id;toast(`${data?.name||x.name} equipped.`);return true}
 function cosmeticRarityLabel(v){return String(v||'common').replace(/^./,c=>c.toUpperCase())}
 function cosmeticById(id){return state.cosmeticCatalog.find(x=>x.id===id)||SPRITES.find(x=>x.id===id)}
-function cosmeticTypeLabel(t){return ({avatar:'Avatar',confetti:'Confetti',frame:'Profile Frame',background:'Profile Background'})[t]||'Cosmetic'}
-function cosmeticEquipped(u,x){return x.type==='avatar'?u.avatarId===x.id:x.type==='confetti'?u.confettiId===x.id:x.type==='frame'?u.frameId===x.id:u.backgroundId===x.id}
+function cosmeticTypeLabel(t){return ({avatar:'Avatar',confetti:'Confetti',background:'Profile Background'})[t]||'Cosmetic'}
+function cosmeticEquipped(u,x){return x.type==='avatar'?u.avatarId===x.id:x.type==='confetti'?u.confettiId===x.id:u.backgroundId===x.id}
 function cosmeticPreview(x){
  if(x.type==='avatar')return spriteVisual({name:x.name,icon:x.icon,assetPath:x.asset_path||x.assetPath},'shop-art');
  if(x.type==='confetti')return `<div class="mini-confetti confetti-${esc(x.id)}"><b>${esc(x.icon||'✨')}</b><i></i><i></i><i></i><i></i><i></i></div>`;
- if(x.type==='frame')return `<div class="mini-profile-frame frame-${esc(x.id)}"><span>🐱</span></div>`;
  return `<div class="mini-profile-bg bg-${esc(x.id)}"><span>🐱</span></div>`;
 }
 function profileShowcase(u,extra=''){
- const frame=u.frameId||'plain-frame',bg=u.backgroundId||'plain-background';
- return `<div class="profile-showcase bg-${esc(bg)} frame-${esc(frame)} ${extra}">${spriteMarkup(u,'large')}</div>`;
+ const bg=u.backgroundId||'plain-background';
+ return `<div class="profile-showcase bg-${esc(bg)} ${extra}">${spriteMarkup(u,'large')}</div>`;
 }
 function confettiSpec(id){
  const specs={
@@ -561,7 +560,7 @@ function fireEquippedConfetti(extraClass=''){
  for(let i=0;i<count;i++){const p=document.createElement('i');p.className=`confetti ${extraClass} themed-confetti`;p.style.left=Math.random()*100+'vw';p.style.animationDelay=Math.random()*.3+'s';if(spec){p.textContent=spec[i%spec.length];p.style.background='transparent';p.style.fontSize=(14+Math.random()*12)+'px'}else p.style.background=`hsl(${Math.random()*360} 85% 60%)`;$('#celebration').appendChild(p);setTimeout(()=>p.remove(),2400)}
 }
 function renderCosmetics(){
- const u=currentUser(),owned=new Set(u.cosmeticUnlocks||[]),types=['avatar','confetti','frame','background'];
+ const u=currentUser(),owned=new Set(u.cosmeticUnlocks||[]),types=['avatar','confetti','background'];
  const shop=state.cosmeticCatalog.filter(x=>x.active&&x.shop_active&&x.acquisition_method==='rp_shop');
  const earned=state.cosmeticCatalog.filter(x=>x.active&&x.acquisition_method==='achievement');
  setHeader('COSMETIC SHOP',`Permanent cosmetics · ${u.rp} RP`);
@@ -1100,18 +1099,18 @@ function removeAdminItem(type,id){
 }
 function openProfile(){
  const u=currentUser();
- $('#profileAvatarId').value=u.avatarId||'dog';$('#profileConfettiId').value=u.confettiId||'classic-confetti';$('#profileFrameId').value=u.frameId||'plain-frame';$('#profileBackgroundId').value=u.backgroundId||'plain-background';$('#profileTitle').value=u.title;renderCosmeticPicker();$('#profileDialog').showModal();
+ $('#profileAvatarId').value=u.avatarId||'dog';$('#profileConfettiId').value=u.confettiId||'classic-confetti';$('#profileBackgroundId').value=u.backgroundId||'plain-background';$('#profileTitle').value=u.title;renderCosmeticPicker();$('#profileDialog').showModal();
 }
 function renderCosmeticPicker(){
- const u=currentUser(),owned=new Set(u.cosmeticUnlocks||[]),types=[['avatar','profileAvatarId','Avatar'],['frame','profileFrameId','Frame'],['background','profileBackgroundId','Background'],['confetti','profileConfettiId','Confetti']];
+ const u=currentUser(),owned=new Set(u.cosmeticUnlocks||[]),types=[['avatar','profileAvatarId','Avatar'],['background','profileBackgroundId','Background'],['confetti','profileConfettiId','Confetti']];
  $('#cosmeticPicker').innerHTML=types.map(([type,input,label])=>{const selected=$('#'+input).value,items=state.cosmeticCatalog.filter(x=>(x.type||'avatar')===type&&(x.acquisition_method==='default'||owned.has(x.id)));return `<div class="profile-cosmetic-group"><h4>${label}</h4><div class="sprite-picker">${items.map(x=>`<button type="button" class="sprite-choice ${selected===x.id?'selected':''}" data-action="profile-cosmetic-select" data-input="${input}" data-cosmetic="${esc(x.id)}"><span class="sprite-choice-icon">${cosmeticPreview(x)}</span><strong>${esc(x.name)}</strong></button>`).join('')}</div></div>`}).join('');
  const preview=$('#profileCosmeticPreview');if(preview){const fake={...u,avatarId:$('#profileAvatarId').value,frameId:$('#profileFrameId').value,backgroundId:$('#profileBackgroundId').value};preview.innerHTML=profileShowcase(fake,'profile-dialog-preview')}
 }
 function renderSpritePicker(){renderCosmeticPicker()}
 async function submitProfile(e){
- e.preventDefault();const u=currentUser(),ids=[$('#profileAvatarId').value,$('#profileFrameId').value,$('#profileBackgroundId').value,$('#profileConfettiId').value];
+ e.preventDefault();const u=currentUser(),ids=[$('#profileAvatarId').value,$('#profileBackgroundId').value,$('#profileConfettiId').value];
  if(window.FQAuth?.realSession){for(const id of ids){if(!await equipCosmetic(id))return}u.title=$('#profileTitle').value.trim()||u.title;$('#profileDialog').close();render();return}
- u.avatarId=ids[0];u.frameId=ids[1];u.backgroundId=ids[2];u.confettiId=ids[3];u.title=$('#profileTitle').value.trim()||u.title;$('#profileDialog').close();render();
+ u.avatarId=ids[0];u.backgroundId=ids[1];u.confettiId=ids[2];u.title=$('#profileTitle').value.trim()||u.title;$('#profileDialog').close();render();
 }
 function openUserDialog(id=null){
  if(!isAdmin())return;
