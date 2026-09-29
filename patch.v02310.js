@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.20';
+  const BUILD='v0.23.10.21';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -375,6 +375,13 @@
     const {data,error}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');
     if(!error)state.reminderSettings02310=data||{};
   }
+  function quarterTime231021(v){
+    const parts=String(v||'17:00').slice(0,5).split(':').map(Number);
+    let mins=(parts[0]||0)*60+(parts[1]||0);
+    mins=Math.round(mins/15)*15;
+    if(mins>=1440)mins=1425;
+    return String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
+  }
   function reminderHTML(){
     const s=state.reminderSettings02310||{},days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const row=(k,title,desc,extra='')=>'<div class="fq-custom-reminder-row"><label class="fq-reminder-toggle"><input type="checkbox" data-r18-on="'+k+'" '+(s[k+'_enabled']?'checked':'')+'><strong>'+title+'</strong></label><span class="muted">'+desc+'</span>'+extra+'<label>Reminder time<input type="time" data-r18-time="'+k+'" value="'+String(s[k+'_time']||'17:00').slice(0,5)+'"></label></div>';
@@ -410,13 +417,18 @@
 
 /* v0.23.10.20 — one reminder save handler, wired directly to rendered button */
 (function(){
+  function snapQuarter231021(v){
+    const p=String(v||'17:00').split(':').map(Number);let m=(p[0]||0)*60+(p[1]||0);
+    m=Math.round(m/15)*15;if(m>=1440)m=1425;
+    return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+  }
   async function save231020(button){
     if(button.dataset.saving==='1')return;
     button.dataset.saving='1';button.disabled=true;button.textContent='Saving…';
     try{
       const pane=document.getElementById('fqReminderPane231018');
       const on=k=>!!pane?.querySelector('[data-r18-on="'+k+'"]')?.checked;
-      const tm=k=>pane?.querySelector('[data-r18-time="'+k+'"]')?.value||'17:00';
+      const tm=k=>snapQuarter231021(pane?.querySelector('[data-r18-time="'+k+'"]')?.value||'17:00');
       const args={p_daily_enabled:on('daily'),p_daily_time:tm('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(pane?.querySelector('[data-r18-weekday]')?.value||0),p_weekly_time:tm('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:tm('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:tm('one_off')};
       const {error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);if(error)throw error;
       const {data:saved,error:readError}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');if(readError)throw readError;
