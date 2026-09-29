@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.26';
+  const BUILD='v0.23.10.28';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -417,7 +417,16 @@
   document.addEventListener('click',async e=>{
     const open=e.target.closest?.('[data-action="profile-open"]');
     if(open){tab='avatar';setTimeout(async()=>{await loadReminderSettings231018();build();},40);}
-    const t=e.target.closest?.('[data-r18-tab]');if(t){e.preventDefault();e.stopImmediatePropagation();tab=t.dataset.r18Tab;build();return;}
+    const t=e.target.closest?.('[data-r18-tab]');if(t){
+      e.preventDefault();e.stopImmediatePropagation();
+      tab=t.dataset.r18Tab;
+      if(tab!=='reminders'){
+        state.profileCosmeticTab=tab;
+        renderCosmeticPicker();
+      }
+      build();
+      return;
+    }
 
   },true);
   const obs=new MutationObserver(()=>{const d=document.getElementById('profileDialog');if(d?.open&&!d.querySelector('#fqCustomizeTabs231018'))build();});obs.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['open']});
