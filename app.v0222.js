@@ -649,10 +649,23 @@ function renderAchievements(){
 function pushSupported(){return window.isSecureContext&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
 function urlBase64ToUint8Array(base64String){const padding='='.repeat((4-base64String.length%4)%4),base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/'),raw=atob(base64),out=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);return out}
 async function getPushRegistration(){if(!pushSupported())return null;return navigator.serviceWorker.register('./sw.js?v=0221',{updateViaCache:'none'}).then(reg=>{reg.update().catch(()=>{});return reg})}
+async function syncPushSubscription0231032(sub){
+ if(!sub||!window.FQAuth?.realSession)return false;
+ const j=sub.toJSON();
+ if(!j.endpoint||!j.keys?.p256dh||!j.keys?.auth)throw new Error('Browser push subscription is incomplete.');
+ const {error}=await window.FQAuth.client.rpc('register_push_subscription',{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_user_agent:navigator.userAgent});
+ if(error)throw error;
+ return true;
+}
 async function refreshPushState(){
  state.pushSupported=pushSupported();state.pushPermission=('Notification'in window)?Notification.permission:'unsupported';state.pushEnabled=false;
  if(!state.pushSupported)return;
- try{const reg=await getPushRegistration();state.pushEnabled=!!(await reg.pushManager.getSubscription())}catch(e){console.warn('Push state',e)}
+ try{
+   const reg=await getPushRegistration(),sub=await reg.pushManager.getSubscription();
+   if(sub&&state.pushPermission==='granted'){
+     state.pushEnabled=await syncPushSubscription0231032(sub);
+   }
+ }catch(e){console.warn('Push registration sync failed',e);state.pushEnabled=false}
  if(state.view==='profiles')renderPushControlsOnly();
 }
 function pushControlsMarkup(){
@@ -669,8 +682,8 @@ async function enablePhonePush(){
    if(permission!=='granted'){toast('Notification permission was not granted.');renderPushControlsOnly();return}
    const reg=await getPushRegistration();let sub=await reg.pushManager.getSubscription();
    if(!sub){const {data:key,error:keyErr}=await window.FQAuth.client.rpc('get_push_public_key');if(keyErr)throw keyErr;sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(key)})}
-   const j=sub.toJSON();const {error}=await window.FQAuth.client.rpc('register_push_subscription',{p_endpoint:j.endpoint,p_p256dh:j.keys?.p256dh,p_auth:j.keys?.auth,p_user_agent:navigator.userAgent});if(error)throw error;
-   state.pushEnabled=true;toast('Phone notifications enabled.');renderPushControlsOnly();
+   await syncPushSubscription0231032(sub);
+   state.pushEnabled=true;toast('Phone notifications enabled and connected to Family Quest.');renderPushControlsOnly();
  }catch(e){console.error(e);toast(e?.message||'Could not enable phone notifications.');await refreshPushState()}
 }
 async function disablePhonePush(){
