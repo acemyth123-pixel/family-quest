@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.22';
+  const BUILD='v0.23.10.23';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -390,7 +390,7 @@
   }
   function reminderHTML(){
     const s=state.reminderSettings02310||{},days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const row=(k,title,desc,extra='')=>'<div class="fq-custom-reminder-row"><label class="fq-reminder-toggle"><input type="checkbox" data-r18-on="'+k+'" '+(s[k+'_enabled']?'checked':'')+'><strong>'+title+'</strong></label><span class="muted">'+desc+'</span>'+extra+'<label>Reminder time<input type="time" data-r18-time="'+k+'" value="'+String(s[k+'_time']||'17:00').slice(0,5)+'"></label></div>';
+    const row=(k,title,desc,extra='')=>'<div class="fq-custom-reminder-row"><label class="fq-reminder-toggle"><input type="checkbox" data-r18-on="'+k+'" '+(s[k+'_enabled']?'checked':'')+'><strong>'+title+'</strong></label><span class="muted">'+desc+'</span>'+extra+quarterPicker231022(k,s[k+'_time']||'17:00')+'</div>';
     const weekday='<label>Reminder day<select data-r18-weekday>'+days.map((d,i)=>'<option value="'+i+'" '+(Number(s.weekly_weekday??0)===i?'selected':'')+'>'+d+'</option>').join('')+'</select></label>';
     return '<div class="fq-custom-reminders"><p class="muted">Send me a phone reminder when quests assigned to me are still unfinished.</p>'+row('daily','Daily quests','At my chosen time if today’s Daily quests are unfinished.')+row('weekly','Weekly quests','On my chosen day and time if Weekly quests are unfinished.',weekday)+row('monthly','Monthly quests','At my chosen time on the due date if unfinished.')+row('one_off','One-Off quests','At my chosen time on the due date if unfinished.')+'<div class="action-row"><button type="button" class="primary" data-action="r18-save">Save Reminders</button></div></div>';
   }
