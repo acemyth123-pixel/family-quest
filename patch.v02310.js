@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.16';
+  const BUILD='v0.23.10.17';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -411,4 +411,48 @@
     if(open){reminderTab='avatar';setTimeout(()=>{draw();loadSettings();},0);}
   },true);
   const mo=new MutationObserver(()=>{if(document.getElementById('profileDialog')?.open)draw();});mo.observe(document.body,{childList:true,subtree:true});
+})();
+
+
+/* v0.23.10.17 — reliable Customize Profile tab owner */
+(function(){
+  let tab='avatar';
+  const labels={avatar:'Avatar',background:'Background',confetti:'Confetti',reminders:'Reminders'};
+  async function getSettings(){
+    if(!window.FQAuth?.realSession)return;
+    const {data,error}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');
+    if(!error)state.reminderSettings02310=data||{};
+  }
+  function remindersHTML(){
+    const s=state.reminderSettings02310||{},days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const row=(k,title,desc,extra='')=>'<div class="fq-custom-reminder-row"><label class="fq-reminder-toggle"><input type="checkbox" data-cpr-enabled="'+k+'" '+(s[k+'_enabled']?'checked':'')+'><strong>'+title+'</strong></label><span class="muted">'+desc+'</span>'+extra+'<label>Reminder time<input type="time" data-cpr-time="'+k+'" value="'+String(s[k+'_time']||'17:00').slice(0,5)+'"></label></div>';
+    const weekday='<label>Reminder day<select data-cpr-weekday>'+days.map((d,i)=>'<option value="'+i+'" '+(Number(s.weekly_weekday??0)===i?'selected':'')+'>'+d+'</option>').join('')+'</select></label>';
+    return '<div class="fq-custom-reminders"><p class="muted">Notify me if quests assigned to me are still unfinished. Personal reminders do not change due dates.</p>'+row('daily','Daily quests','At my chosen time if today’s Daily quests are unfinished.')+row('weekly','Weekly quests','On my chosen day and time if Weekly quests are unfinished.',weekday)+row('monthly','Monthly quests','At my chosen time on the due date if unfinished.')+row('one_off','One-Off quests','At my chosen time on the due date if unfinished.')+'<div class="action-row"><button type="button" class="primary" data-action="cpr-save">Save Reminders</button></div></div>';
+  }
+  function rebuild(){
+    const d=document.getElementById('profileDialog'),picker=document.getElementById('cosmeticPicker');if(!d?.open||!picker)return;
+    let nav=d.querySelector('.fq-customize-tabs-v231017');
+    if(!nav){nav=document.createElement('div');nav.className='tabs fq-customize-tabs fq-customize-tabs-v231017';picker.before(nav);}
+    nav.innerHTML=Object.keys(labels).map(k=>'<button type="button" class="ghost '+(tab===k?'active':'')+'" data-cpr-tab="'+k+'">'+labels[k]+'</button>').join('');
+    const groups=[...picker.querySelectorAll('.profile-cosmetic-group')];
+    groups.forEach((g,i)=>{const k=['avatar','background','confetti'][i];g.style.display=(tab===k?'':'none');});
+    let pane=d.querySelector('.fq-custom-reminder-pane-v231017');
+    if(!pane){pane=document.createElement('div');pane.className='fq-custom-reminder-pane-v231017';picker.after(pane);}
+    pane.style.display=tab==='reminders'?'':'none';pane.innerHTML=tab==='reminders'?remindersHTML():'';
+    const preview=document.getElementById('profileCosmeticPreview');if(preview)preview.style.display=tab==='reminders'?'none':'';
+    const old=d.querySelector('.fq-customize-tabs:not(.fq-customize-tabs-v231017)');if(old)old.remove();
+  }
+  document.addEventListener('click',async e=>{
+    const profileOpen=e.target.closest?.('[data-action="profile-open"]');
+    if(profileOpen){tab='avatar';setTimeout(async()=>{await getSettings();rebuild();},30);}
+    const t=e.target.closest?.('[data-cpr-tab]');if(t){e.preventDefault();e.stopImmediatePropagation();tab=t.dataset.cprTab;rebuild();return;}
+    const s=e.target.closest?.('[data-action="cpr-save"]');if(s){
+      e.preventDefault();e.stopImmediatePropagation();
+      const on=k=>!!document.querySelector('[data-cpr-enabled="'+k+'"]')?.checked,val=k=>document.querySelector('[data-cpr-time="'+k+'"]')?.value||'17:00';
+      const args={p_daily_enabled:on('daily'),p_daily_time:val('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(document.querySelector('[data-cpr-weekday]')?.value||0),p_weekly_time:val('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:val('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:val('one_off')};
+      const {data,error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);if(error){toast(error.message);return}state.reminderSettings02310=data||args;toast('Reminder settings saved.');rebuild();return;
+    }
+  },true);
+  const observer=new MutationObserver(()=>{const d=document.getElementById('profileDialog');if(d?.open&&!d.querySelector('.fq-customize-tabs-v231017'))rebuild();});
+  observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['open']});
 })();
