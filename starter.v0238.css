@@ -47,3 +47,8 @@
 
 /* v0.23.10.16 — Customize Profile tabs + reminder pane */
 .fq-customize-tabs{display:flex;gap:7px;overflow-x:auto;margin:12px 0 16px;padding-bottom:3px}.fq-customize-tabs button{white-space:nowrap;flex:1 0 auto}.fq-customize-tabs button.active{outline:2px solid currentColor}.fq-custom-reminders{display:grid;gap:12px}.fq-custom-reminder-row{display:grid;gap:7px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025)}.fq-custom-reminder-row label{display:grid;gap:5px}.fq-custom-reminder-row .fq-reminder-toggle{display:flex;align-items:center;gap:8px}.fq-custom-reminder-row input[type=time],.fq-custom-reminder-row select{width:100%}
+
+/* v0.23.10.24 — compact reminder quarter-hour picker */
+.fq-custom-reminder-row .fq-quarter-time{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
+.fq-custom-reminder-row .fq-quarter-time select{display:block;width:100%;min-width:0;height:44px;margin:0;padding:0 34px 0 12px}
+@media(max-width:520px){.fq-custom-reminder-row .fq-quarter-time{grid-template-columns:1fr 1fr 1fr}}
