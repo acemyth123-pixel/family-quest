@@ -16,7 +16,7 @@ Verification sources: GitHub `acemyth123-pixel/family-quest` main + Supabase pro
 - `manifest.webmanifest` uses `start_url: "./"` and `scope: "./"`.
 - Service worker is `sw.js`; navigation is network-first/no-store with cache fallback.
 - Current cache identifier: `family-quest-v0231031`.
-- Live frontend version/cache labels were aligned to **v0.23.10.31** while adding Starry Swirl. This remains live/experimental and does not change the formal stable checkpoint.
+- Live frontend version/cache labels were aligned to **v0.23.10.31** while adding Starry Swirl; a stale `BUILD='v0.23.10.28'` owner in `patch.v02310.js` was subsequently found and corrected after device testing. This remains live/experimental and does not change the formal stable checkpoint.
 - Current frontend uses the long patch lineage; consolidation into a clean exact-live package remains desirable.
 
 ## Verified live backend
@@ -45,7 +45,7 @@ Live Supabase contains RP-shop backgrounds through:
 
 `starter.v0231027.css` contains the illustrated Whimsical Waterfall Islands background. `patch.v0231027.js` applies the equipped background to player-facing cards.
 
-**Starry Swirl is now live in Supabase and styled in `starter.v0231027.css` as of 2026-09-29.**
+**Starry Swirl is live in Supabase and styled in `starter.v0231027.css`. After user review, its first abstract galaxy treatment was replaced with a brighter painted cobalt swirl + warm gold star treatment based on the supplied visual reference.**
 
 Starry Swirl definition:
 - id: `shop-starry-swirl`
