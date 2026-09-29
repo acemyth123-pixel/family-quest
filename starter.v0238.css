@@ -44,3 +44,6 @@
 @keyframes fqShopBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.45) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.15) rotate(240deg)}}
 .fq-shop-rain-particle{top:-42px;animation:fqShopRain 2.4s linear forwards}
 @keyframes fqShopRain{0%{opacity:0;transform:translateY(-20px) rotate(0)}8%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(112vh) rotate(420deg)}}
+
+/* v0.23.10.16 — Customize Profile tabs + reminder pane */
+.fq-customize-tabs{display:flex;gap:7px;overflow-x:auto;margin:12px 0 16px;padding-bottom:3px}.fq-customize-tabs button{white-space:nowrap;flex:1 0 auto}.fq-customize-tabs button.active{outline:2px solid currentColor}.fq-custom-reminders{display:grid;gap:12px}.fq-custom-reminder-row{display:grid;gap:7px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025)}.fq-custom-reminder-row label{display:grid;gap:5px}.fq-custom-reminder-row .fq-reminder-toggle{display:flex;align-items:center;gap:8px}.fq-custom-reminder-row input[type=time],.fq-custom-reminder-row select{width:100%}
