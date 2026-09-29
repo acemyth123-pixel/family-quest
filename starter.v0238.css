@@ -52,3 +52,8 @@
 .fq-custom-reminder-row .fq-quarter-time{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
 .fq-custom-reminder-row .fq-quarter-time select{display:block;width:100%;min-width:0;height:44px;margin:0;padding:0 34px 0 12px}
 @media(max-width:520px){.fq-custom-reminder-row .fq-quarter-time{grid-template-columns:1fr 1fr 1fr}}
+
+/* v0.23.10.25 — override global select grid styling inside reminder time control */
+.fq-custom-reminder-row .fq-quarter-time{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+.fq-custom-reminder-row .fq-quarter-time>select{display:block!important;position:static!important;float:none!important;width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;max-height:44px!important;overflow:hidden!important;margin:0!important;padding:0 32px 0 12px!important;line-height:44px!important}
+.fq-custom-reminder-row .fq-quarter-time>select option{display:block}
