@@ -1,4 +1,4 @@
-/* Family Quest v0.23.10.29 — equipped background theme for player-facing cards */
+/* Family Quest v0.23.10.31 — equipped background theme for player-facing cards */
 #view .fq-themed-card{
   position:relative;
   isolation:isolate;
@@ -57,4 +57,22 @@
   background-size:cover!important;
   background-position:center!important;
   background-repeat:no-repeat!important;
+}
+
+
+/* v0.23.10.31 — Starry Swirl RP background */
+.bg-shop-starry-swirl,
+.fq-player-shell.bg-shop-starry-swirl .fq-profile-head{
+  background:
+    radial-gradient(ellipse at 50% 48%,transparent 0 18%,rgba(192,164,255,.18) 19% 22%,transparent 23% 31%,rgba(92,207,255,.14) 32% 35%,transparent 36% 48%),
+    conic-gradient(from 205deg at 50% 48%,rgba(124,86,255,.38),rgba(34,205,255,.18),rgba(255,105,214,.30),rgba(55,29,128,.42),rgba(124,86,255,.38)),
+    radial-gradient(circle at 16% 20%,rgba(255,255,255,.95) 0 1px,transparent 2px),
+    radial-gradient(circle at 76% 16%,rgba(203,229,255,.95) 0 1px,transparent 2px),
+    radial-gradient(circle at 28% 72%,rgba(255,214,250,.9) 0 1px,transparent 2px),
+    radial-gradient(circle at 84% 68%,rgba(255,255,255,.85) 0 1px,transparent 2px),
+    radial-gradient(circle at 58% 34%,rgba(255,255,255,.9) 0 1.5px,transparent 2.5px),
+    linear-gradient(145deg,#09051f 0%,#17104a 42%,#081b3d 72%,#050713 100%)!important;
+  background-size:auto,auto,57px 57px,83px 83px,71px 71px,101px 101px,127px 127px,auto!important;
+  background-position:center!important;
+  background-repeat:no-repeat,no-repeat,repeat,repeat,repeat,repeat,repeat,no-repeat!important;
 }
