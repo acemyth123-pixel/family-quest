@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.18';
+  const BUILD='v0.23.10.19';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -408,4 +408,40 @@
     }
   },true);
   const obs=new MutationObserver(()=>{const d=document.getElementById('profileDialog');if(d?.open&&!d.querySelector('#fqCustomizeTabs231018'))build();});obs.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['open']});
+})();
+
+
+/* v0.23.10.19 — reminder save is independent from Save Profile */
+(function(){
+  function reminderArgs(){
+    const q=s=>document.querySelector(s), on=k=>!!q('[data-r18-on="'+k+'"]')?.checked, tm=k=>q('[data-r18-time="'+k+'"]')?.value||'17:00';
+    return {p_daily_enabled:on('daily'),p_daily_time:tm('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(q('[data-r18-weekday]')?.value||0),p_weekly_time:tm('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:tm('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:tm('one_off')};
+  }
+  async function saveReminders(){
+    const button=document.querySelector('[data-action="r18-save"]');if(button){button.disabled=true;button.textContent='Saving…';}
+    try{
+      const args=reminderArgs();
+      const {data,error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);
+      if(error)throw error;
+      const {data:verify,error:verifyError}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');
+      if(verifyError)throw verifyError;
+      const saved=Array.isArray(verify)?verify[0]:verify;
+      const expected=String(args.p_daily_time).slice(0,5), actual=String(saved?.daily_time||'').slice(0,5);
+      if(args.p_daily_enabled && expected!==actual)throw new Error('Reminder time did not save. Please try again.');
+      state.reminderSettings02310=saved||data||args;
+      toast('Reminder settings saved.');
+      return true;
+    }catch(err){console.error('Reminder save failed',err);toast('Could not save reminders: '+(err?.message||err));return false}
+    finally{if(button){button.disabled=false;button.textContent='Save Reminders';}}
+  }
+  // Capture pointerup because mobile dialog/profile handlers can consume click first.
+  document.addEventListener('pointerup',e=>{
+    const b=e.target.closest?.('[data-action="r18-save"]');if(!b)return;
+    e.preventDefault();e.stopImmediatePropagation();saveReminders();
+  },true);
+  // Keyboard/accessibility fallback.
+  document.addEventListener('click',e=>{
+    const b=e.target.closest?.('[data-action="r18-save"]');if(!b||e.detail!==0)return;
+    e.preventDefault();e.stopImmediatePropagation();saveReminders();
+  },true);
 })();
