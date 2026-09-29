@@ -15,8 +15,8 @@ Verification sources: GitHub `acemyth123-pixel/family-quest` main + Supabase pro
 - Root `index.html` is the application shell.
 - `manifest.webmanifest` uses `start_url: "./"` and `scope: "./"`.
 - Service worker is `sw.js`; navigation is network-first/no-store with cache fallback.
-- Current cache identifier observed: `family-quest-v0231029`.
-- Root `index.html` displays `v0.23.10.29`, while `patch.v0231027.js` declares `v0.23.10.30` and sets the build badge at runtime. Treat this as a **version-label/cache alignment issue to clean up**, not as proof of a new formal checkpoint.
+- Current cache identifier: `family-quest-v0231031`.
+- Live frontend version/cache labels were aligned to **v0.23.10.31** while adding Starry Swirl. This remains live/experimental and does not change the formal stable checkpoint.
 - Current frontend uses the long patch lineage; consolidation into a clean exact-live package remains desirable.
 
 ## Verified live backend
@@ -45,9 +45,9 @@ Live Supabase contains RP-shop backgrounds through:
 
 `starter.v0231027.css` contains the illustrated Whimsical Waterfall Islands background. `patch.v0231027.js` applies the equipped background to player-facing cards.
 
-**Starry Swirl is not yet present in live Supabase as of this verification.**
+**Starry Swirl is now live in Supabase and styled in `starter.v0231027.css` as of 2026-09-29.**
 
-Planned Starry Swirl definition:
+Starry Swirl definition:
 - id: `shop-starry-swirl`
 - name: `Starry Swirl`
 - icon: 🌙
@@ -70,8 +70,8 @@ Planned Starry Swirl definition:
 ## Immediate continuity priorities
 
 1. Keep these repository continuity files updated during development.
-2. When adding Starry Swirl, verify the current background CSS/catalog wiring first, add the Supabase definition, add the CSS, align build/cache identifiers, and test purchase/equip behavior without replacing Whimsical Waterfall Islands.
-3. Clean the current v0.23.10.29 / v0.23.10.30 / cache-0231029 version-label mismatch during the next frontend build bump.
+2. Run the user-facing app walkthrough/regression pass; structure is believed essentially complete, with work shifting toward cosmetic tweaks/additions unless the walkthrough finds structural issues.
+3. Verify Starry Swirl appears in the RP shop and purchase/equip behavior works without replacing Whimsical Waterfall Islands.
 4. Eventually consolidate the patch chain into a clean exact-live package and only then consider a new formal Source Checkpoint after user testing.
 
 ## New-chat instruction
