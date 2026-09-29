@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.19';
+  const BUILD='v0.23.10.20';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -400,48 +400,42 @@
     const open=e.target.closest?.('[data-action="profile-open"]');
     if(open){tab='avatar';setTimeout(async()=>{await loadReminderSettings231018();build();},40);}
     const t=e.target.closest?.('[data-r18-tab]');if(t){e.preventDefault();e.stopImmediatePropagation();tab=t.dataset.r18Tab;build();return;}
-    const save=e.target.closest?.('[data-action="r18-save"]');if(save){
-      e.preventDefault();e.stopImmediatePropagation();
-      const on=k=>!!document.querySelector('[data-r18-on="'+k+'"]')?.checked,val=k=>document.querySelector('[data-r18-time="'+k+'"]')?.value||'17:00';
-      const args={p_daily_enabled:on('daily'),p_daily_time:val('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(document.querySelector('[data-r18-weekday]')?.value||0),p_weekly_time:val('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:val('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:val('one_off')};
-      const {data,error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);if(error){toast(error.message);return}state.reminderSettings02310=data||args;toast('Reminder settings saved.');build();return;
-    }
+
   },true);
   const obs=new MutationObserver(()=>{const d=document.getElementById('profileDialog');if(d?.open&&!d.querySelector('#fqCustomizeTabs231018'))build();});obs.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['open']});
 })();
 
 
-/* v0.23.10.19 — reminder save is independent from Save Profile */
+
+
+/* v0.23.10.20 — one reminder save handler, wired directly to rendered button */
 (function(){
-  function reminderArgs(){
-    const q=s=>document.querySelector(s), on=k=>!!q('[data-r18-on="'+k+'"]')?.checked, tm=k=>q('[data-r18-time="'+k+'"]')?.value||'17:00';
-    return {p_daily_enabled:on('daily'),p_daily_time:tm('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(q('[data-r18-weekday]')?.value||0),p_weekly_time:tm('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:tm('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:tm('one_off')};
-  }
-  async function saveReminders(){
-    const button=document.querySelector('[data-action="r18-save"]');if(button){button.disabled=true;button.textContent='Saving…';}
+  async function save231020(button){
+    if(button.dataset.saving==='1')return;
+    button.dataset.saving='1';button.disabled=true;button.textContent='Saving…';
     try{
-      const args=reminderArgs();
-      const {data,error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);
-      if(error)throw error;
-      const {data:verify,error:verifyError}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');
-      if(verifyError)throw verifyError;
-      const saved=Array.isArray(verify)?verify[0]:verify;
-      const expected=String(args.p_daily_time).slice(0,5), actual=String(saved?.daily_time||'').slice(0,5);
-      if(args.p_daily_enabled && expected!==actual)throw new Error('Reminder time did not save. Please try again.');
-      state.reminderSettings02310=saved||data||args;
+      const pane=document.getElementById('fqReminderPane231018');
+      const on=k=>!!pane?.querySelector('[data-r18-on="'+k+'"]')?.checked;
+      const tm=k=>pane?.querySelector('[data-r18-time="'+k+'"]')?.value||'17:00';
+      const args={p_daily_enabled:on('daily'),p_daily_time:tm('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(pane?.querySelector('[data-r18-weekday]')?.value||0),p_weekly_time:tm('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:tm('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:tm('one_off')};
+      const {error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);if(error)throw error;
+      const {data:saved,error:readError}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');if(readError)throw readError;
+      const row=Array.isArray(saved)?saved[0]:saved;
+      const checks=[['daily',args.p_daily_enabled,args.p_daily_time],['weekly',args.p_weekly_enabled,args.p_weekly_time],['monthly',args.p_monthly_enabled,args.p_monthly_time],['one_off',args.p_one_off_enabled,args.p_one_off_time]];
+      for(const [k,en,time] of checks){if(Boolean(row?.[k+'_enabled'])!==Boolean(en)||String(row?.[k+'_time']||'').slice(0,5)!==String(time).slice(0,5))throw new Error(k+' reminder did not persist');}
+      if(Number(row?.weekly_weekday)!==Number(args.p_weekly_weekday))throw new Error('weekly reminder day did not persist');
+      state.reminderSettings02310=row;
+      button.textContent='✓ Saved';
       toast('Reminder settings saved.');
-      return true;
-    }catch(err){console.error('Reminder save failed',err);toast('Could not save reminders: '+(err?.message||err));return false}
-    finally{if(button){button.disabled=false;button.textContent='Save Reminders';}}
+      setTimeout(()=>{button.textContent='Save Reminders';button.disabled=false;button.dataset.saving='0';},1200);
+    }catch(err){
+      console.error(err);button.textContent='Save Failed';button.disabled=false;button.dataset.saving='0';toast('Could not save reminders: '+(err?.message||err));
+    }
   }
-  // Capture pointerup because mobile dialog/profile handlers can consume click first.
-  document.addEventListener('pointerup',e=>{
-    const b=e.target.closest?.('[data-action="r18-save"]');if(!b)return;
-    e.preventDefault();e.stopImmediatePropagation();saveReminders();
-  },true);
-  // Keyboard/accessibility fallback.
-  document.addEventListener('click',e=>{
-    const b=e.target.closest?.('[data-action="r18-save"]');if(!b||e.detail!==0)return;
-    e.preventDefault();e.stopImmediatePropagation();saveReminders();
-  },true);
+  function wire(){
+    const b=document.querySelector('#fqReminderPane231018 [data-action="r18-save"]');if(!b||b.dataset.directSave==='1')return;
+    b.dataset.directSave='1';
+    b.onclick=e=>{e.preventDefault();e.stopPropagation();save231020(b);};
+  }
+  const mo=new MutationObserver(wire);mo.observe(document.body,{childList:true,subtree:true});wire();
 })();
