@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.25';
+  const BUILD='v0.23.10.26';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -382,15 +382,20 @@
     if(mins>=1440)mins=1425;
     return String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
   }
-  function quarterPicker231022(k,v){
-    const q=quarterTime231021(v),p=q.split(':').map(Number),h24=p[0],minute=p[1],ampm=h24>=12?'PM':'AM',h12=(h24%12)||12;
-    const hours=Array.from({length:12},(_,i)=>i+1).map(h=>'<option value="'+h+'" '+(h===h12?'selected':'')+'>'+h+'</option>').join('');
-    const mins=[0,15,30,45].map(m=>'<option value="'+m+'" '+(m===minute?'selected':'')+'>:'+String(m).padStart(2,'0')+'</option>').join('');
-    return '<label>Reminder time<div class="fq-quarter-time" data-r18-quarter="'+k+'><select data-r18-hour="'+k+'">'+hours+'</select><select data-r18-minute="'+k+'">'+mins+'</select><select data-r18-ampm="'+k+'"><option '+(ampm==='AM'?'selected':'')+'>AM</option><option '+(ampm==='PM'?'selected':'')+'>PM</option></select></div></label>';
+  function quarterPicker231026(k,v){
+    const selected=quarterTime231021(v);
+    const opts=[];
+    for(let h=0;h<24;h++)for(const m of [0,15,30,45]){
+      const value=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+      const h12=(h%12)||12, ap=h<12?'AM':'PM';
+      const label=h12+':'+String(m).padStart(2,'0')+' '+ap;
+      opts.push('<option value="'+value+'" '+(value===selected?'selected':'')+'>'+label+'</option>');
+    }
+    return '<div class="fq-reminder-time-field"><span>Reminder time</span><select data-r18-quarter-value="'+k+'">'+opts.join('')+'</select></div>';
   }
   function reminderHTML(){
     const s=state.reminderSettings02310||{},days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const row=(k,title,desc,extra='')=>'<div class="fq-custom-reminder-row"><label class="fq-reminder-toggle"><input type="checkbox" data-r18-on="'+k+'" '+(s[k+'_enabled']?'checked':'')+'><strong>'+title+'</strong></label><span class="muted">'+desc+'</span>'+extra+quarterPicker231022(k,s[k+'_time']||'17:00')+'</div>';
+    const row=(k,title,desc,extra='')=>'<div class="fq-custom-reminder-row"><label class="fq-reminder-toggle"><input type="checkbox" data-r18-on="'+k+'" '+(s[k+'_enabled']?'checked':'')+'><strong>'+title+'</strong></label><span class="muted">'+desc+'</span>'+extra+quarterPicker231026(k,s[k+'_time']||'17:00')+'</div>';
     const weekday='<label>Reminder day<select data-r18-weekday>'+days.map((d,i)=>'<option value="'+i+'" '+(Number(s.weekly_weekday??0)===i?'selected':'')+'>'+d+'</option>').join('')+'</select></label>';
     return '<div class="fq-custom-reminders"><p class="muted">Send me a phone reminder when quests assigned to me are still unfinished.</p>'+row('daily','Daily quests','At my chosen time if today’s Daily quests are unfinished.')+row('weekly','Weekly quests','On my chosen day and time if Weekly quests are unfinished.',weekday)+row('monthly','Monthly quests','At my chosen time on the due date if unfinished.')+row('one_off','One-Off quests','At my chosen time on the due date if unfinished.')+'<div class="action-row"><button type="button" class="primary" data-action="r18-save">Save Reminders</button></div></div>';
   }
@@ -434,7 +439,7 @@
     try{
       const pane=document.getElementById('fqReminderPane231018');
       const on=k=>!!pane?.querySelector('[data-r18-on="'+k+'"]')?.checked;
-      const tm=k=>{const h=Number(pane?.querySelector('[data-r18-hour="'+k+'"]')?.value||5),m=Number(pane?.querySelector('[data-r18-minute="'+k+'"]')?.value||0),ap=pane?.querySelector('[data-r18-ampm="'+k+'"]')?.value||'PM';let h24=(h%12)+(ap==='PM'?12:0);return String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');};
+      const tm=k=>pane?.querySelector('[data-r18-quarter-value="'+k+'"]')?.value||'17:00';
       const args={p_daily_enabled:on('daily'),p_daily_time:tm('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(pane?.querySelector('[data-r18-weekday]')?.value||0),p_weekly_time:tm('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:tm('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:tm('one_off')};
       const {error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);if(error)throw error;
       const {data:saved,error:readError}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');if(readError)throw readError;
