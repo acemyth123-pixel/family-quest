@@ -122,7 +122,9 @@
     if($a('#signUpPassword').value!==$a('#signUpPassword2').value){msg('Passwords do not match.');return}
     msg('Creating account…');
     const {data,error}=await client.auth.signUp({
-      email:$a('#signUpEmail').value.trim(),password:$a('#signUpPassword').value
+      email:$a('#signUpEmail').value.trim(),
+      password:$a('#signUpPassword').value,
+      options:{emailRedirectTo:'https://acemyth123-pixel.github.io/family-quest/'}
     });
     if(error){show('authSignedOut',errText(error));return}
     if(!data.session){
