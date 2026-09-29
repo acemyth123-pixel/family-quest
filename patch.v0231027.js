@@ -1,43 +1,50 @@
-/* Family Quest v0.23.10.27 — equipped profile background on Home cards */
+/* Family Quest v0.23.10.29 — equipped background across player-facing cards */
 (function(){
-  const BUILD='v0.23.10.27';
-  function clearBgClasses(el){
-    if(!el)return;
-    [...el.classList].filter(c=>c.startsWith('bg-')).forEach(c=>el.classList.remove(c));
-  }
+  const BUILD='v0.23.10.29';
   function themeCard(el,bg){
     if(!el)return;
-    clearBgClasses(el);
-    el.classList.add('fq-home-themed-card','bg-'+bg);
+    const prior=el.dataset.fqThemeBgClass;
+    if(prior)el.classList.remove(prior);
+    const cls='bg-'+bg;
+    el.dataset.fqThemeBgClass=cls;
+    el.classList.add('fq-themed-card',cls);
   }
-  function applyHomeBackgrounds0231027(){
-    if(state?.view!=='home')return;
+  function clearThemeCards(){
+    document.querySelectorAll('#view .fq-themed-card').forEach(el=>{
+      const prior=el.dataset.fqThemeBgClass;
+      if(prior)el.classList.remove(prior);
+      delete el.dataset.fqThemeBgClass;
+      el.classList.remove('fq-themed-card');
+    });
+  }
+  function shouldTheme(card){
+    if(!card)return false;
+    if(card.closest('.fq-player-shell'))return false;
+    if(card.classList.contains('admin-section'))return false;
+    if(card.closest('#realMembershipPanel,#realChoreApprovalPanel,#realRewardApprovalPanel,.failed-panel,.overdue-panel'))return false;
+    return true;
+  }
+  function applyEquippedBackgroundTheme(){
+    clearThemeCards();
+    if(!state?.view||state.view==='admin')return;
     const u=currentUser?.();
     if(!u)return;
     const bg=String(u.backgroundId||'plain-background');
 
-    // Main player/XP card.
-    themeCard(document.querySelector('#view > .card'),bg);
-
-    // Reward Points card nested inside the player hero.
-    themeCard(document.querySelector('#view > .card .profile-hero > .card.stat'),bg);
-
-    // Current Streak / Open Quests / Notifications / Admin Queue.
-    document.querySelectorAll('#view > .grid.cards-4 > .card').forEach(card=>themeCard(card,bg));
-
-    // Larger Home content cards such as Upcoming. Up Next may be removed by the
-    // existing Home cleanup before this runs; any remaining direct grid card is themed.
-    document.querySelectorAll('#view > .grid:not(.cards-4) > .card').forEach(card=>themeCard(card,bg));
+    document.querySelectorAll('#view .card').forEach(card=>{
+      if(shouldTheme(card))themeCard(card,bg);
+    });
   }
 
   const priorRender=render;
   render=function(){
     priorRender();
-    queueMicrotask(applyHomeBackgrounds0231027);
+    queueMicrotask(applyEquippedBackgroundTheme);
   };
 
-  window.FQApplyHomeBackgrounds=applyHomeBackgrounds0231027;
-  window.addEventListener('load',()=>setTimeout(applyHomeBackgrounds0231027,550));
+  window.FQApplyEquippedBackgroundTheme=applyEquippedBackgroundTheme;
+  window.FQApplyHomeBackgrounds=applyEquippedBackgroundTheme;
+  window.addEventListener('load',()=>setTimeout(applyEquippedBackgroundTheme,550));
 
   const badge=document.getElementById('buildBadge');
   if(badge)badge.textContent=BUILD;
