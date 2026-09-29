@@ -280,3 +280,27 @@
     });
   },250);
 })();
+
+/* v0.23.10.14 — expanded celebration/confetti effects */
+(function(){
+  const oldSpec=window.confettiSpec||confettiSpec;
+  confettiSpec=function(id){
+    const more={
+      'sparkle-confetti':['✨','✦','⋆','✧'],
+      'shooting-star-confetti':['🌠','⭐','✦'],
+      'heart-confetti':['💜','💖','💕'],
+      'lightning-confetti':['⚡','✦','⚡'],
+      'flower-confetti':['🌸','🌼','✿'],
+      'gem-confetti':['💎','◆','✦'],
+      'party-confetti':['🎉','🎊','✦'],
+      'hero-confetti':['⭐','✨','💥'],
+      'speed-confetti':['💨','⚡','✦'],
+      'moon-confetti':['🌙','⭐','✦'],
+      'trash-confetti':['🗑️','✨','▪'],
+      'pet-confetti':['🐾','🦴','🐾'],
+      'royal-confetti':['👑','✨','◆']
+    };
+    return more[id]||oldSpec(id);
+  };
+  window.confettiSpec=confettiSpec;
+})();
