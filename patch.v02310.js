@@ -304,3 +304,61 @@
   };
   window.confettiSpec=confettiSpec;
 })();
+
+
+/* v0.23.10.15 — try-before-you-buy celebration previews in Cosmetic Shop */
+(function(){
+  function fqCelebrationSpec(id){
+    const specs={
+      'leaf-confetti':['🍂','🍁','🍃'],'snowfall-confetti':['❄️','❅','✦'],'harvest-confetti':['🍎','🎃','🍂'],
+      'fireworks-confetti':['✦','★','✹'],'coin-confetti':['🪙','◆','✦'],'grass-confetti':['🌱','🍃','▪'],
+      'sunshine-confetti':['🌈','☀️','✦'],'bubble-confetti':['🫧','○','◌'],'ice-confetti':['🧊','❄️','✦'],
+      'sparkle-confetti':['✨','✦','⋆','✧'],'shooting-star-confetti':['🌠','⭐','✦'],'heart-confetti':['💜','💖','💕'],
+      'lightning-confetti':['⚡','✦','⚡'],'flower-confetti':['🌸','🌼','✿'],'gem-confetti':['💎','◆','✦'],
+      'party-confetti':['🎉','🎊','✦'],'hero-confetti':['⭐','✨','💥'],'speed-confetti':['💨','⚡','✦'],
+      'moon-confetti':['🌙','⭐','✦'],'trash-confetti':['🗑️','✨','▪'],'pet-confetti':['🐾','🦴','🐾'],
+      'royal-confetti':['👑','✨','◆']
+    };
+    return specs[id]||['■','●','▲','◆'];
+  }
+  function fqPreviewLayer(){return document.querySelector('#celebration')||document.body}
+  function fqBurstCelebration(id,anchor){
+    const spec=fqCelebrationSpec(id),layer=fqPreviewLayer(),r=anchor?.getBoundingClientRect?.(),x=r?r.left+r.width/2:innerWidth/2,y=r?r.top+r.height/2:innerHeight/2;
+    for(let i=0;i<34;i++){
+      const p=document.createElement('i'),a=Math.random()*Math.PI*2,d=70+Math.random()*150;
+      p.textContent=spec[i%spec.length];p.className='fq-shop-burst-particle';
+      p.style.left=x+'px';p.style.top=y+'px';p.style.setProperty('--dx',Math.cos(a)*d+'px');p.style.setProperty('--dy',Math.sin(a)*d+'px');
+      p.style.fontSize=(14+Math.random()*12)+'px';layer.appendChild(p);setTimeout(()=>p.remove(),1050);
+    }
+  }
+  function fqRainCelebration(id){
+    const spec=fqCelebrationSpec(id),layer=fqPreviewLayer();
+    for(let i=0;i<48;i++){
+      const p=document.createElement('i');p.textContent=spec[i%spec.length];p.className='fq-shop-rain-particle';
+      p.style.left=Math.random()*100+'vw';p.style.animationDelay=Math.random()*.55+'s';p.style.animationDuration=(1.8+Math.random()*1.2)+'s';
+      p.style.fontSize=(14+Math.random()*13)+'px';layer.appendChild(p);setTimeout(()=>p.remove(),3600);
+    }
+  }
+  function fqDecorateConfettiShop(){
+    if(state?.view!=='cosmetics')return;
+    document.querySelectorAll('.cosmetic-card').forEach(card=>{
+      const control=card.querySelector('[data-action="cosmetic-buy"],[data-action="cosmetic-equip"]');
+      if(!control)return;
+      const id=control.dataset.cosmetic,x=state.cosmeticCatalog?.find(v=>String(v.id)===String(id));
+      if(!x||x.type!=='confetti'||card.querySelector('.fq-confetti-tests'))return;
+      const owned=(currentUser()?.cosmeticUnlocks||[]).map(String).includes(String(id))||x.acquisition_method==='default';
+      if(x.secret&&!owned)return;
+      const row=document.createElement('div');row.className='row fq-confetti-tests';
+      row.innerHTML='<button type="button" class="ghost" data-fq-confetti-burst="'+String(id).replace(/"/g,'&quot;')+'">💥 Test Burst</button><button type="button" class="ghost" data-fq-confetti-rain="'+String(id).replace(/"/g,'&quot;')+'">🎉 Test Celebration</button>';
+      card.appendChild(row);
+    });
+  }
+  document.addEventListener('click',e=>{
+    const b=e.target.closest?.('[data-fq-confetti-burst],[data-fq-confetti-rain]');if(!b)return;
+    e.preventDefault();e.stopPropagation();
+    if(b.dataset.fqConfettiBurst)fqBurstCelebration(b.dataset.fqConfettiBurst,b);
+    else fqRainCelebration(b.dataset.fqConfettiRain);
+  },true);
+  const mo=new MutationObserver(()=>fqDecorateConfettiShop());mo.observe(document.body,{childList:true,subtree:true});
+  window.addEventListener('load',()=>setTimeout(fqDecorateConfettiShop,500));
+})();
