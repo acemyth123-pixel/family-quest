@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.10.21';
+  const BUILD='v0.23.10.22';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
@@ -382,6 +382,12 @@
     if(mins>=1440)mins=1425;
     return String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
   }
+  function quarterPicker231022(k,v){
+    const q=quarterTime231021(v),p=q.split(':').map(Number),h24=p[0],minute=p[1],ampm=h24>=12?'PM':'AM',h12=(h24%12)||12;
+    const hours=Array.from({length:12},(_,i)=>i+1).map(h=>'<option value="'+h+'" '+(h===h12?'selected':'')+'>'+h+'</option>').join('');
+    const mins=[0,15,30,45].map(m=>'<option value="'+m+'" '+(m===minute?'selected':'')+'>:'+String(m).padStart(2,'0')+'</option>').join('');
+    return '<label>Reminder time<div class="fq-quarter-time" data-r18-quarter="'+k+'><select data-r18-hour="'+k+'">'+hours+'</select><select data-r18-minute="'+k+'">'+mins+'</select><select data-r18-ampm="'+k+'"><option '+(ampm==='AM'?'selected':'')+'>AM</option><option '+(ampm==='PM'?'selected':'')+'>PM</option></select></div></label>';
+  }
   function reminderHTML(){
     const s=state.reminderSettings02310||{},days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const row=(k,title,desc,extra='')=>'<div class="fq-custom-reminder-row"><label class="fq-reminder-toggle"><input type="checkbox" data-r18-on="'+k+'" '+(s[k+'_enabled']?'checked':'')+'><strong>'+title+'</strong></label><span class="muted">'+desc+'</span>'+extra+'<label>Reminder time<input type="time" data-r18-time="'+k+'" value="'+String(s[k+'_time']||'17:00').slice(0,5)+'"></label></div>';
@@ -428,7 +434,7 @@
     try{
       const pane=document.getElementById('fqReminderPane231018');
       const on=k=>!!pane?.querySelector('[data-r18-on="'+k+'"]')?.checked;
-      const tm=k=>snapQuarter231021(pane?.querySelector('[data-r18-time="'+k+'"]')?.value||'17:00');
+      const tm=k=>{const h=Number(pane?.querySelector('[data-r18-hour="'+k+'"]')?.value||5),m=Number(pane?.querySelector('[data-r18-minute="'+k+'"]')?.value||0),ap=pane?.querySelector('[data-r18-ampm="'+k+'"]')?.value||'PM';let h24=(h%12)+(ap==='PM'?12:0);return String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');};
       const args={p_daily_enabled:on('daily'),p_daily_time:tm('daily'),p_weekly_enabled:on('weekly'),p_weekly_weekday:Number(pane?.querySelector('[data-r18-weekday]')?.value||0),p_weekly_time:tm('weekly'),p_monthly_enabled:on('monthly'),p_monthly_time:tm('monthly'),p_one_off_enabled:on('one_off'),p_one_off_time:tm('one_off')};
       const {error}=await window.FQAuth.client.rpc('save_my_chore_reminder_settings',args);if(error)throw error;
       const {data:saved,error:readError}=await window.FQAuth.client.rpc('get_my_chore_reminder_settings');if(readError)throw readError;
