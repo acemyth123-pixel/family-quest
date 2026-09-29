@@ -1,6 +1,6 @@
-/* Family Quest v0.23.10.29 — equipped background across player-facing cards */
+/* Family Quest v0.23.10.30 — equipped background across player-facing cards */
 (function(){
-  const BUILD='v0.23.10.29';
+  const BUILD='v0.23.10.30';
   function themeCard(el,bg){
     if(!el)return;
     const prior=el.dataset.fqThemeBgClass;
