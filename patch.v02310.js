@@ -239,4 +239,44 @@
   render=function(){prevRender();queueMicrotask(()=>{setBadge();applyQuickAddVisibility023105();addReminderSettings();applyAdmin();addOverdueThresholdControl023105();refreshHome023102()});if(state.view==='profiles'&&state.profilePlayerId&&!state.reminderSettings02310)loadReminderSettings().then(()=>{if(state.view==='profiles'){addReminderSettings();}});if(state.view==='admin'){loadHouseholdReminderThreshold023105().then(addOverdueThresholdControl023105);[80,300,800].forEach(ms=>setTimeout(()=>{applyAdmin();addOverdueThresholdControl023105();},ms));}};
   window.addEventListener('load',()=>{setBadge();setTimeout(()=>{applyQuickAddVisibility023105();loadHouseholdReminderThreshold023105();addReminderSettings();applyAdmin();addOverdueThresholdControl023105();refreshHome023102()},500)});
   setBadge();
+
+  // Route notification launches after auth is ready. The push URL carries only
+  // the notification id; source/type are read from Supabase so routing stays
+  // correct even as notification types evolve.
+  function notificationView023112(n){
+    const t=String(n?.type||'').toLowerCase(),s=String(n?.source_type||'').toLowerCase();
+    if(t==='push_test')return 'notifications';
+    if(t==='calendar_today'||s==='calendar'||s==='calendar_event')return 'calendar';
+    if(t==='request'||t.startsWith('request_')||s==='family_request')return 'requests';
+    if(t==='grocery'||t.startsWith('grocery_'))return 'groceries';
+    if(t==='achievement'||t.startsWith('achievement_')||s.includes('achievement'))return 'achievements';
+    if(t==='reward'||t.startsWith('reward_')||s.includes('reward'))return 'rewards';
+    if(t.startsWith('admin_'))return 'admin';
+    if(t==='chore'||t==='overdue'||t==='overdue_reminder'||t==='failed_quest'||t==='failure'||t.startsWith('chore_')||t.startsWith('failure_')||s.startsWith('chore_'))return 'chores';
+    return 'notifications';
+  }
+  async function routeNotificationLaunch023112(){
+    const params=new URLSearchParams(location.search),id=params.get('notification');
+    if(!id||sessionStorage.getItem('fq-routed-notification')===id)return;
+    if(!window.FQAuth?.realSession||!window.FQAuth?.profile?.user_id)return;
+    const {data:n,error}=await window.FQAuth.client.from('notifications').select('id,type,source_type,source_id,read_at').eq('id',id).eq('user_id',window.FQAuth.profile.user_id).maybeSingle();
+    if(error||!n)return;
+    sessionStorage.setItem('fq-routed-notification',id);
+    state.view=notificationView023112(n);
+    if(!n.read_at)window.FQAuth.client.rpc('mark_notification_read',{p_id:id}).catch(()=>{});
+    history.replaceState({},'',location.pathname+location.hash);
+    render();
+    if(state.view==='chores'&&n.source_type==='chore_instance'&&n.source_id){
+      const chore=(state.chores||[]).find(x=>String(x.instanceId||'')===String(n.source_id));
+      if(chore)setTimeout(()=>openChoreDetail(chore.id),100);
+    }
+  }
+  let notificationRouteTries023112=0;
+  const notificationRouteTimer023112=setInterval(()=>{
+    if(!new URLSearchParams(location.search).get('notification')){clearInterval(notificationRouteTimer023112);return}
+    routeNotificationLaunch023112().finally(()=>{
+      notificationRouteTries023112++;
+      if(notificationRouteTries023112>40||sessionStorage.getItem('fq-routed-notification')===new URLSearchParams(location.search).get('notification'))clearInterval(notificationRouteTimer023112);
+    });
+  },250);
 })();
