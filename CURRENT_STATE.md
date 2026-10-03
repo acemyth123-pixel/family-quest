@@ -16,7 +16,7 @@ Verification sources: GitHub `acemyth123-pixel/family-quest` main + Supabase pro
 - `manifest.webmanifest` uses `start_url: "./"` and `scope: "./"`.
 - Service worker is `sw.js`; navigation is network-first/no-store with cache fallback.
 - Current cache identifier: `family-quest-v0231032`.
-- Live frontend version/cache labels were aligned to **v0.23.10.32** while adding Starry Swirl; a stale `BUILD='v0.23.10.28'` owner in `patch.v02310.js` was subsequently found and corrected after device testing. This remains live/experimental and does not change the formal stable checkpoint.
+- Live frontend version/cache labels were aligned to **v0.23.10.33** while adding Starry Swirl; a stale `BUILD='v0.23.10.28'` owner in `patch.v02310.js` was subsequently found and corrected after device testing. This remains live/experimental and does not change the formal stable checkpoint.
 - Current frontend uses the long patch lineage; consolidation into a clean exact-live package remains desirable.
 
 ## Verified live backend
@@ -67,13 +67,20 @@ Starry Swirl definition:
 - Personal chore reminder settings live under profile customization.
 - Avoid multiple patches/controllers owning the same UI feature.
 
-## Latest onboarding reliability fix — v0.23.10.32
+## Latest onboarding reliability fix — v0.23.10.33
 
 - Signup now explicitly sets the Supabase email confirmation redirect to `https://acemyth123-pixel.github.io/family-quest/`.
 - Android/browser push state now self-heals: when a local PushManager subscription exists, Family Quest re-registers it with Supabase before reporting notifications as enabled.
 - The enable flow now reports success only after backend registration succeeds.
 - This was added after a newly approved Android user had browser notification permission but zero rows in `push_subscriptions`.
 - Supabase Auth must also allow the Family Quest Pages URL in its Redirect URLs configuration; app code cannot override a server-side redirect allow-list.
+
+## v0.23.10.33 walkthrough regression fixes
+
+- Other-player profiles now load authoritative current-season XP/RP/streak stats and lifetime XP for all active household members instead of preserving stale browser values.
+- Admin soft-overdue/reminder threshold is restored as a durable editable time control backed by `set_household_chore_reminder_threshold`; current household value remains 18:00 until changed.
+- XP award accounting itself was verified healthy; this fix is display/loading only.
+- Remaining notification work: admin approval-needed pushes and automatic admin soft-overdue alerts still require implementation/verification.
 
 ## Immediate continuity priorities
 
