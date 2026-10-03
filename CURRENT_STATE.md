@@ -82,6 +82,13 @@ Starry Swirl definition:
 - XP award accounting itself was verified healthy; this fix is display/loading only.
 - Remaining notification work: admin approval-needed pushes and automatic admin soft-overdue alerts still require implementation/verification.
 
+## v0.23.10.36 soft-overdue UI correction
+
+- Removed the duplicate soft-overdue/reminder-time control introduced in v0.23.10.33.
+- Restored the original Admin Overdue Chores card as the single owner of the household Daily/Weekly soft-overdue threshold.
+- The threshold remains household-wide and currently saves through get/set_household_chore_reminder_threshold.
+- Verified get_admin_overdue_chores returns open assigned Daily/Weekly chores for the household after the threshold, while Monthly/One-Off use their actual due time.
+
 ## Immediate continuity priorities
 
 1. Keep these repository continuity files updated during development.
