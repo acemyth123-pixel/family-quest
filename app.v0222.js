@@ -323,9 +323,14 @@ async function loadRealCurrentStats(){
 async function loadRealHouseholdMembers(){
  if(!(window.FQAuth?.realSession&&window.FQAuth?.profile?.household_id))return;
  const c=window.FQAuth.client,p=window.FQAuth.profile;
- const {data,error}=await c.from('profiles').select('user_id,display_name,role,active,title,selected_sprite_id,selected_confetti_id,selected_background_id').eq('household_id',p.household_id).eq('membership_status','active');
- if(error)throw error;
- state.users=(data||[]).map(u=>{const old=state.users.find(x=>String(x.id)===String(u.user_id));return {id:u.user_id,name:u.display_name,role:u.role==='admin'?'Admin Parent':'Family Member',admin:u.role==='admin',active:u.active,title:u.title||'New Adventurer',avatarId:u.selected_sprite_id||'dog',confettiId:u.selected_confetti_id||'classic-confetti',backgroundId:u.selected_background_id||'plain-background',xp:old?.xp||0,rp:old?.rp||0,streak:old?.streak||0,bestStreak:old?.bestStreak||0,lifetime:old?.lifetime||0,cosmeticUnlocks:old?.cosmeticUnlocks||[]}});
+ const [{data,error},{data:stats,error:statsError},{data:life,error:lifeError}]=await Promise.all([
+   c.from('profiles').select('user_id,display_name,role,active,title,selected_sprite_id,selected_confetti_id,selected_background_id').eq('household_id',p.household_id).eq('membership_status','active'),
+   c.from('season_stats').select('user_id,season_xp,reward_points,current_streak,best_streak').eq('household_id',p.household_id).eq('season_year',state.seasonYear),
+   c.from('lifetime_stats').select('user_id,lifetime_xp')
+ ]);
+ if(error)throw error;if(statsError)throw statsError;if(lifeError)throw lifeError;
+ const statMap=new Map((stats||[]).map(x=>[String(x.user_id),x])),lifeMap=new Map((life||[]).map(x=>[String(x.user_id),x]));
+ state.users=(data||[]).map(u=>{const old=state.users.find(x=>String(x.id)===String(u.user_id)),s=statMap.get(String(u.user_id)),l=lifeMap.get(String(u.user_id));return {id:u.user_id,name:u.display_name,role:u.role==='admin'?'Admin Parent':'Family Member',admin:u.role==='admin',active:u.active,title:u.title||'New Adventurer',avatarId:u.selected_sprite_id||'dog',confettiId:u.selected_confetti_id||'classic-confetti',backgroundId:u.selected_background_id||'plain-background',xp:s?.season_xp||0,rp:s?.reward_points||0,streak:s?.current_streak||0,bestStreak:s?.best_streak||0,lifetime:l?.lifetime_xp||0,cosmeticUnlocks:old?.cosmeticUnlocks||[]}});
  const me=state.users.find(u=>u.id===p.user_id); if(me){state.currentUser=me.name;state.achievementTarget=me.name}
 }
 async function loadRealChores(){
