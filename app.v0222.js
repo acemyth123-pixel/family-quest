@@ -653,7 +653,7 @@ function renderAchievements(){
 }
 function pushSupported(){return window.isSecureContext&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
 function urlBase64ToUint8Array(base64String){const padding='='.repeat((4-base64String.length%4)%4),base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/'),raw=atob(base64),out=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);return out}
-async function getPushRegistration(){if(!pushSupported())return null;return navigator.serviceWorker.register('./sw.js?v=0221',{updateViaCache:'none'}).then(reg=>{reg.update().catch(()=>{});return reg})}
+async function getPushRegistration(){if(!pushSupported())return null;return navigator.serviceWorker.register('./sw.js?v=0231034',{updateViaCache:'none'}).then(reg=>{reg.update().catch(()=>{});return reg})}
 async function syncPushSubscription0231032(sub){
  if(!sub||!window.FQAuth?.realSession)return false;
  const j=sub.toJSON();
