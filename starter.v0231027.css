@@ -82,3 +82,12 @@
   background-position:center!important;
   background-repeat:repeat!important;
 }
+
+/* v0.23.11.3 — Household / Personal quest mode */
+.fq-quest-mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 18px;padding:5px;border:1px solid var(--line,#293858);border-radius:18px;background:rgba(8,15,34,.7)}
+.fq-quest-mode button{appearance:none;border:1px solid transparent;border-radius:14px;padding:12px 14px;background:transparent;color:var(--muted,#aeb9d4);font:inherit;font-weight:800;cursor:pointer}
+.fq-quest-mode button.active{color:#fff;background:linear-gradient(135deg,#7650ff,#5638df);box-shadow:0 8px 22px rgba(91,62,220,.25)}
+.fq-goal-done{font-weight:800;color:#8ce0bd}
+#personalDetailDialog .simple-item{cursor:pointer;gap:12px}
+#personalDetailDialog input[type="checkbox"]{width:22px;height:22px;accent-color:#7650ff;flex:0 0 auto}
+#personalDetailDialog .done{text-decoration:line-through;opacity:.65}
