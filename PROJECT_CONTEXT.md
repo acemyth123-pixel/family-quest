@@ -1,6 +1,6 @@
 # Family Quest — Project Continuity Contract
 
-Updated: 2026-09-29
+Updated: 2026-10-04
 
 ## Purpose
 
@@ -65,3 +65,8 @@ Update `CURRENT_STATE.md` whenever any of these happen:
 The detailed binder remains the long-form design/history document. The repository continuity files are the operational handoff layer. The binder should be refreshed at milestones or major architecture changes; `CURRENT_STATE.md` should stay current during ordinary development.
 
 Current formal stable Source Checkpoint remains **v0.19.13** until explicitly promoted by the user.
+
+
+## Current major feature note — Personal Goals
+
+As of live build v0.23.11.1, Family Quest includes private Personal Goals. Treat these as self-directed, non-punitive goals separate from household chores. Goal details/completions are private to the owner; Admin participates only when the user submits an eligible consistency milestone for XP review. See CURRENT_STATE.md for the exact live behavior and backend objects.
