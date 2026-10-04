@@ -15,8 +15,8 @@ Verification sources: GitHub `acemyth123-pixel/family-quest` main + Supabase pro
 - Root `index.html` is the application shell.
 - `manifest.webmanifest` uses `start_url: "./"` and `scope: "./"`.
 - Service worker is `sw.js`; navigation is network-first/no-store with cache fallback.
-- Current cache identifier: `family-quest-v023112`.
-- Current live/experimental frontend build is **v0.23.11.2**. The formal stable checkpoint remains v0.19.13 until explicitly promoted.ng Starry Swirl; a stale `BUILD='v0.23.10.28'` owner in `patch.v02310.js` was subsequently found and corrected after device testing. This remains live/experimental and does not change the formal stable checkpoint.
+- Current cache identifier: `family-quest-v023113`.
+- Current live/experimental frontend build is **v0.23.11.3**. The formal stable checkpoint remains v0.19.13 until explicitly promoted.ng Starry Swirl; a stale `BUILD='v0.23.10.28'` owner in `patch.v02310.js` was subsequently found and corrected after device testing. This remains live/experimental and does not change the formal stable checkpoint.
 - Current frontend uses the long patch lineage; consolidation into a clean exact-live package remains desirable.
 
 ## Verified live backend
@@ -90,7 +90,7 @@ Starry Swirl definition:
 - Verified get_admin_overdue_chores returns open assigned Daily/Weekly chores for the household after the threshold, while Monthly/One-Off use their actual due time.
 
 
-## Personal Goals / Personal Quests — v0.23.11.2
+## Personal Goals / Personal Quests — v0.23.11.3
 
 Personal Goals are now a private, self-directed quest system designed to support ADHD-friendly momentum without household punishment.
 
@@ -122,7 +122,7 @@ Personal Goals are now a private, self-directed quest system designed to support
 If the user says **"Continue Family Quest"**, begin by reading this file and `PROJECT_CONTEXT.md`, then inspect the live GitHub/Supabase areas relevant to the next task. Do not ask the user to reconstruct prior work unless the live sources and documentation genuinely leave an ambiguity.
 
 
-## Personal Goals UX refinement — v0.23.11.2
+## Personal Goals UX refinement — v0.23.11.3
 
 - Home Personal Momentum remains a shortcut into Personal Goals.
 - Quests now adds a top-level Household Quests / Personal Goals switch; the existing household quest interface remains intact.
@@ -133,3 +133,10 @@ If the user says **"Continue Family Quest"**, begin by reading this file and `PR
 - Checking the final step automatically completes the current occurrence; Complete remains available to bypass optional steps.
 - Completed daily goals now explicitly display **✓ Completed Today** and disable the redundant completion action for that occurrence.
 - Backend migration: `personal_quest_step_progress_v023112`; RPCs: `save_personal_quest_step_progress`, `resolve_personal_quest_step_progress`.
+
+
+## Personal Goals device-test correction — v0.23.11.3
+
+- Device testing showed the first Household/Personal switch rendered as unstyled browser buttons and disappeared after entering Personal Goals. It is now a styled two-way quest-mode control rendered in both Household Quests and Personal Goals.
+- Device testing also showed a partial checklist interaction associated with a resolved/completed occurrence. Step auto-completion is now hardened: after saving a step, the client re-reads persisted step indexes, normalizes/deduplicates them, and only completes when every defined step index is persisted. A single step in a multi-step goal cannot satisfy that condition.
+- Checklist styling now matches the app visual language and completed steps visibly strike through.
