@@ -69,4 +69,4 @@ Current formal stable Source Checkpoint remains **v0.19.13** until explicitly pr
 
 ## Current major feature note — Personal Goals
 
-As of live build v0.23.11.1, Family Quest includes private Personal Goals. Treat these as self-directed, non-punitive goals separate from household chores. Goal details/completions are private to the owner; Admin participates only when the user submits an eligible consistency milestone for XP review. See CURRENT_STATE.md for the exact live behavior and backend objects.
+As of live build v0.23.11.2, Family Quest includes private Personal Goals. Treat these as self-directed, non-punitive goals separate from household chores. Goal details/completions are private to the owner; Admin participates only when the user submits an eligible consistency milestone for XP review. See CURRENT_STATE.md for the exact live behavior and backend objects.
