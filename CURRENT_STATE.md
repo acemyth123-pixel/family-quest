@@ -1,6 +1,6 @@
 # Family Quest — Current State
 
-Last live verification: 2026-09-29
+Last live verification: 2026-10-04
 Verification sources: GitHub `acemyth123-pixel/family-quest` main + Supabase project `ooctpgofcrysnpwunbuw`.
 
 ## Formal stable checkpoint
@@ -15,8 +15,8 @@ Verification sources: GitHub `acemyth123-pixel/family-quest` main + Supabase pro
 - Root `index.html` is the application shell.
 - `manifest.webmanifest` uses `start_url: "./"` and `scope: "./"`.
 - Service worker is `sw.js`; navigation is network-first/no-store with cache fallback.
-- Current cache identifier: `family-quest-v0231032`.
-- Live frontend version/cache labels were aligned to **v0.23.10.33** while adding Starry Swirl; a stale `BUILD='v0.23.10.28'` owner in `patch.v02310.js` was subsequently found and corrected after device testing. This remains live/experimental and does not change the formal stable checkpoint.
+- Current cache identifier: `family-quest-v023111`.
+- Current live/experimental frontend build is **v0.23.11.1**. The formal stable checkpoint remains v0.19.13 until explicitly promoted.ng Starry Swirl; a stale `BUILD='v0.23.10.28'` owner in `patch.v02310.js` was subsequently found and corrected after device testing. This remains live/experimental and does not change the formal stable checkpoint.
 - Current frontend uses the long patch lineage; consolidation into a clean exact-live package remains desirable.
 
 ## Verified live backend
@@ -78,7 +78,7 @@ Starry Swirl definition:
 ## v0.23.10.33 walkthrough regression fixes
 
 - Other-player profiles now load authoritative current-season XP/RP/streak stats and lifetime XP for all active household members instead of preserving stale browser values.
-- Admin soft-overdue/reminder threshold is restored as a durable editable time control backed by `set_household_chore_reminder_threshold`; current household value remains 18:00 until changed.
+- Admin soft-overdue/reminder threshold is restored as a durable editable time control backed by `set_household_chore_reminder_threshold`; household value was changed by Admin to 17:00.
 - XP award accounting itself was verified healthy; this fix is display/loading only.
 - Remaining notification work: admin approval-needed pushes and automatic admin soft-overdue alerts still require implementation/verification.
 
@@ -88,6 +88,27 @@ Starry Swirl definition:
 - Restored the original Admin Overdue Chores card as the single owner of the household Daily/Weekly soft-overdue threshold.
 - The threshold remains household-wide and currently saves through get/set_household_chore_reminder_threshold.
 - Verified get_admin_overdue_chores returns open assigned Daily/Weekly chores for the household after the threshold, while Monthly/One-Off use their actual due time.
+
+
+## Personal Goals / Personal Quests — v0.23.11.1
+
+Personal Goals are now a private, self-directed quest system designed to support ADHD-friendly momentum without household punishment.
+
+- Each user can create and edit only their own Personal Goals.
+- Supported planning fields include one-time, daily, selected-day, and weekly-target schedules; optional deadline, reminder time, notes, and steps.
+- Goals can be paused; they do not enter household overdue/failure logic and do not trigger Admin policing for missed goals.
+- The Personal Goals screen includes Check In, Edit, Pause, and **Just Start** encouragement.
+- Home has a compact **Personal Momentum** card showing active-goal count, goals currently on target, and momentum without exposing private goal names to other users.
+- Personal-goal completion history is private under RLS.
+- Momentum/current and best streaks are separate from household chore streaks. Weekly-target momentum advances when the target period is actually achieved rather than on every individual check-in.
+- XP is not awarded for every self-created completion. Eligible milestones are 7 / 14 / 30 / 60 / 100 completions with suggested awards 50 / 75 / 150 / 250 / 500 XP.
+- A user explicitly submits an eligible milestone for Admin review. Admin sees the member, milestone, and suggested XP, but not the private goal details.
+- Approval writes season XP, lifetime XP, XP transaction history, and normal RP gained from crossing XP thresholds. Approval/decline notifies the submitting user.
+- Submitting a milestone creates an Admin notification.
+- Backend tables: `personal_quests`, `personal_quest_completions`, `personal_quest_xp_claims`.
+- Key RPCs: `complete_personal_quest`, `submit_personal_quest_xp`, `review_personal_quest_xp`.
+- Frontend owner: `patch.v02311.js`.
+- Supabase migrations: `personal_quests_v02311` and `personal_quests_finish_v023111`.
 
 ## Immediate continuity priorities
 
