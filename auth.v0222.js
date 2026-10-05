@@ -72,14 +72,17 @@
     if(typeof populateUsers==='function')populateUsers();
     checkAutomaticSeasonReset();
     startedApp=true;
-    render();
-    const startupLoaders=['members','chores','cosmetics','achievements','rewards','calendar','groceries','notifications','requests','xpMultipliers','personalGoals'];
-    for(const key of startupLoaders){
-      const loader=window.FQLoaders?.[key];
-      if(!loader)continue;
-      try{await loader()}catch(e){console.error('Family Quest startup loader failed:',key,e);}
-    }
-    try{await refreshIdentity()}catch(e){console.error('Family Quest identity refresh failed:',e);}
+    if(window.FQLoaders?.members)await window.FQLoaders.members();
+    if(window.FQLoaders?.chores)await window.FQLoaders.chores();
+    await refreshIdentity();
+    if(window.FQLoaders?.cosmetics)await window.FQLoaders.cosmetics();
+    if(window.FQLoaders?.achievements)await window.FQLoaders.achievements();
+    if(window.FQLoaders?.rewards)await window.FQLoaders.rewards();
+    if(window.FQLoaders?.calendar)await window.FQLoaders.calendar();
+    if(window.FQLoaders?.groceries)await window.FQLoaders.groceries();
+    if(window.FQLoaders?.notifications)await window.FQLoaders.notifications();
+    if(window.FQLoaders?.requests)await window.FQLoaders.requests();
+    if(window.FQLoaders?.xpMultipliers)await window.FQLoaders.xpMultipliers();
     render();
   }
   async function route(){
@@ -223,7 +226,6 @@
       }
       const action=e.target.closest('[data-auth-action]')?.dataset.authAction;
       if(action==='signout'){await signOut();return}
-      if(action==='reset-session'){await client.auth.signOut({scope:'local'}).catch(()=>{});try{Object.keys(localStorage).filter(k=>k.includes('supabase')||k.startsWith('sb-')).forEach(k=>localStorage.removeItem(k));}catch(_){} session=null;profile=null;household=null;api.realSession=false;startedApp=false;show('authSignedOut','Session reset. Sign in with your existing Family Quest account.');return}
       if(action==='refresh'){await refreshSession();return}
       if(action==='retry-join'){show('authNoFamily');return}
       const a=e.target.closest('[data-real-approve]');if(a){await approve(a.dataset.realApprove);return}
@@ -237,8 +239,7 @@
     client.auth.onAuthStateChange((_event,newSession)=>{
       session=newSession;api.realSession=!!newSession;
     });
-    const recovery=setTimeout(()=>{if(!startedApp){const gate=$a('#authGate');if(gate&&!gate.hidden){const box=gate.querySelector('.auth-card')||gate.querySelector('.card')||gate.firstElementChild;if(box&&!box.querySelector('[data-auth-action="reset-session"]')){const wrap=document.createElement('div');wrap.style.marginTop='14px';wrap.innerHTML='<p class="muted">Taking longer than expected?</p><button class="ghost wide" data-auth-action="reset-session">Reset Sign-In</button>';box.appendChild(wrap)}}}},8000);
-    try{await refreshSession()}finally{if(startedApp)clearTimeout(recovery)}
+    await refreshSession();
   }
   const api={start,renderMembershipAdmin,refreshIdentity,realSession:false,client,get profile(){return profile},get household(){return household}};
   window.FQAuth=api;
