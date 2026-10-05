@@ -128,7 +128,14 @@
     });
     if(error){show('authSignedOut',errText(error));return}
     if(!data.session){
-      show('authSignedOut','Account created. Check your email for the confirmation link, then come back and sign in.');
+      show('authSignedOut','No new signed-in account was created. If this email already belongs to Family Quest, use Sign In instead. Otherwise check your email for a confirmation link.');
+      return;
+    }
+    const createdAt=data.user?.created_at?Date.parse(data.user.created_at):0;
+    if(!createdAt || Math.abs(Date.now()-createdAt)>120000){
+      await client.auth.signOut({scope:'local'}).catch(()=>{});
+      session=null;api.realSession=false;
+      show('authSignedOut','That email may already have an account. No existing Family Quest membership was changed. Please use Sign In.');
       return;
     }
     session=data.session;api.realSession=true;await route();
