@@ -2,6 +2,13 @@
 let rewardRequestBusy=false;
 let lotteryBusyUntil=0;
 "use strict";
+
+// Shared confirmation helper. Personal Goals v0.23.11.13 relies on this global.
+window.fqConfirm=window.fqConfirm||function fqConfirm(options={}){
+ const title=String(options.title||'Confirm');
+ const message=String(options.message||'Are you sure?');
+ return Promise.resolve(window.confirm(title+'\n\n'+message));
+};
 const state={groceryQuest:null,
  currentUser:'',view:'home',calendarMode:'month',calendarCursor:'',achievementTarget:'',editing:null,rewardDraft:null,editingCalendarId:null,
  users:[],
