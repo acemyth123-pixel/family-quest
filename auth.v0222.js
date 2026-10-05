@@ -158,37 +158,65 @@
     if(error){show('authNoFamily',errText(error));return}
     await route();
   }
+  let recoveryEmail='';
   async function requestPasswordReset(){
     const email=$a('#signInEmail').value.trim();
     if(!email){msg('Enter your email address first, then tap Forgot password.');$a('#signInEmail').focus();return}
-    msg('Sending password reset email…');
-    const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:'https://acemyth123-pixel.github.io/family-quest/'});
+    recoveryEmail=email;
+    msg('Sending password reset code…');
+    const {error}=await client.auth.resetPasswordForEmail(email);
     if(error){show('authSignedOut',errText(error));return}
-    show('authSignedOut','If an account exists for that email, a password reset link has been sent. Check your inbox and spam folder.');
-    $a('#signInEmail').value=email;
+    showRecoveryCodeEntry();
+  }
+  function hideAuthForms(){
+    $a('#signInForm').hidden=true;$a('#signUpForm').hidden=true;
+    const tabs=document.querySelector('.auth-tabs');if(tabs)tabs.hidden=true;
+  }
+  function restoreSignIn(message=''){
+    document.getElementById('passwordRecoveryForm')?.remove();
+    document.getElementById('passwordRecoveryCodeForm')?.remove();
+    const tabs=document.querySelector('.auth-tabs');if(tabs)tabs.hidden=false;
+    $a('#signInForm').hidden=false;$a('#signUpForm').hidden=true;
+    show('authSignedOut',message);
+  }
+  function showRecoveryCodeEntry(){
+    show('authSignedOut','If an account exists for that email, a 6-digit password reset code has been sent. Check your inbox and spam folder.');
+    hideAuthForms();
+    document.getElementById('passwordRecoveryForm')?.remove();
+    document.getElementById('passwordRecoveryCodeForm')?.remove();
+    const box=document.createElement('form');box.id='passwordRecoveryCodeForm';box.className='auth-form';
+    box.innerHTML='<h2>Enter Reset Code</h2><p class="muted">Enter the 6-digit code from your Family Quest password reset email.</p><label>Reset Code<input id="recoveryCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required></label><button class="primary" type="submit">Verify Code</button><button class="ghost" type="button" id="recoveryCancel">Back to Sign In</button>';
+    $a('#authSignedOut').appendChild(box);
+    box.querySelector('#recoveryCancel').onclick=()=>restoreSignIn();
+    box.addEventListener('submit',async e=>{
+      e.preventDefault();
+      const token=$a('#recoveryCode').value.trim();
+      msg('Verifying code…');
+      const {data,error}=await client.auth.verifyOtp({email:recoveryEmail,token,type:'recovery'});
+      if(error){msg('That reset code is invalid or expired. Request a new code and try again.');return}
+      session=data.session;api.realSession=!!data.session;
+      showPasswordRecovery();
+    });
   }
   function showPasswordRecovery(){
     show('authSignedOut');
-    $a('#signInForm').hidden=true;$a('#signUpForm').hidden=true;
-    let box=document.getElementById('passwordRecoveryForm');
-    if(!box){
-      box=document.createElement('form');box.id='passwordRecoveryForm';box.className='auth-form';
-      box.innerHTML='<h2>Set New Password</h2><p class="muted">Choose a new password for your Family Quest account.</p><label>New Password<input id="recoveryPassword" type="password" autocomplete="new-password" minlength="6" required></label><label>Confirm Password<input id="recoveryPassword2" type="password" autocomplete="new-password" minlength="6" required></label><button class="primary" type="submit">Update Password</button>';
-      $a('#authSignedOut').appendChild(box);
-      box.addEventListener('submit',async e=>{
-        e.preventDefault();
-        const p=$a('#recoveryPassword').value,p2=$a('#recoveryPassword2').value;
-        if(p!==p2){msg('Passwords do not match.');return}
-        msg('Updating password…');
-        const {error}=await client.auth.updateUser({password:p});
-        if(error){msg(errText(error));return}
-        await client.auth.signOut({scope:'local'});
-        session=null;api.realSession=false;box.remove();
-        $a('#signInForm').hidden=false;$a('#signUpForm').hidden=true;
-        show('authSignedOut','Password updated. Sign in with your new password.');
-      });
-    }
-    box.hidden=false;
+    hideAuthForms();
+    document.getElementById('passwordRecoveryCodeForm')?.remove();
+    document.getElementById('passwordRecoveryForm')?.remove();
+    const box=document.createElement('form');box.id='passwordRecoveryForm';box.className='auth-form';
+    box.innerHTML='<h2>Create New Password</h2><p class="muted">Code confirmed. Choose a new password for your Family Quest account.</p><label>New Password<input id="recoveryPassword" type="password" autocomplete="new-password" minlength="6" required></label><label>Confirm Password<input id="recoveryPassword2" type="password" autocomplete="new-password" minlength="6" required></label><button class="primary" type="submit">Save New Password</button>';
+    $a('#authSignedOut').appendChild(box);
+    box.addEventListener('submit',async e=>{
+      e.preventDefault();
+      const p=$a('#recoveryPassword').value,p2=$a('#recoveryPassword2').value;
+      if(p!==p2){msg('Passwords do not match.');return}
+      msg('Updating password…');
+      const {error}=await client.auth.updateUser({password:p});
+      if(error){msg(errText(error));return}
+      await client.auth.signOut({scope:'local'});
+      session=null;api.realSession=false;recoveryEmail='';
+      restoreSignIn('Password updated. Sign in with your new password.');
+    });
   }
   async function signOut(){
     await client.auth.signOut({scope:'local'});
