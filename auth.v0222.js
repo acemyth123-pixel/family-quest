@@ -223,6 +223,7 @@
       }
       const action=e.target.closest('[data-auth-action]')?.dataset.authAction;
       if(action==='signout'){await signOut();return}
+      if(action==='reset-session'){await client.auth.signOut({scope:'local'}).catch(()=>{});try{Object.keys(localStorage).filter(k=>k.includes('supabase')||k.startsWith('sb-')).forEach(k=>localStorage.removeItem(k));}catch(_){} session=null;profile=null;household=null;api.realSession=false;startedApp=false;show('authSignedOut','Session reset. Sign in with your existing Family Quest account.');return}
       if(action==='refresh'){await refreshSession();return}
       if(action==='retry-join'){show('authNoFamily');return}
       const a=e.target.closest('[data-real-approve]');if(a){await approve(a.dataset.realApprove);return}
@@ -236,7 +237,8 @@
     client.auth.onAuthStateChange((_event,newSession)=>{
       session=newSession;api.realSession=!!newSession;
     });
-    await refreshSession();
+    const recovery=setTimeout(()=>{if(!startedApp){const gate=$a('#authGate');if(gate&&!gate.hidden){const box=gate.querySelector('.auth-card')||gate.querySelector('.card')||gate.firstElementChild;if(box&&!box.querySelector('[data-auth-action="reset-session"]')){const wrap=document.createElement('div');wrap.style.marginTop='14px';wrap.innerHTML='<p class="muted">Taking longer than expected?</p><button class="ghost wide" data-auth-action="reset-session">Reset Sign-In</button>';box.appendChild(wrap)}}}},8000);
+    try{await refreshSession()}finally{if(startedApp)clearTimeout(recovery)}
   }
   const api={start,renderMembershipAdmin,refreshIdentity,realSession:false,client,get profile(){return profile},get household(){return household}};
   window.FQAuth=api;
