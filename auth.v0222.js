@@ -185,6 +185,23 @@
     toast(action==='rename'?'Name updated.':'Family member updated.');
     await renderMembershipAdmin(true);
   }
+  async function shareFamilyQuest(){
+    if(!profile || profile.role!=='admin')return;
+    const code=household?.invite_code||'';
+    const url='https://acemyth123-pixel.github.io/family-quest/';
+    const familyName=household?.name||'our family';
+    const shareData={
+      title:'Join Family Quest',
+      text:`Join ${familyName} on Family Quest!\n\nFamily code: ${code}\n\nOpen Family Quest and create an account, then choose Join Family and enter the code.`,
+      url
+    };
+    if(navigator.share){
+      try{await navigator.share(shareData);return}catch(e){if(e?.name==='AbortError')return}
+    }
+    const fallback=`${shareData.text}\n\n${url}`;
+    try{await navigator.clipboard.writeText(fallback);toast('Family Quest invite copied.');}
+    catch(e){window.prompt('Copy this Family Quest invite:',fallback);}
+  }
   async function renderMembershipAdmin(force=false){
     if(!profile || profile.role!=='admin' || state.view!=='admin')return;
     const view=document.getElementById('view'); if(!view)return;
@@ -199,7 +216,7 @@
     panel.id='realMembershipPanel';panel.className='card admin-section backend-panel';
     panel.innerHTML=`
       <div class="section-title"><h3>🔐 Household Members</h3><span class="chip good">Live Backend</span></div>
-      <div class="invite-code-box"><span>Family Invite Code</span><strong>${household?.invite_code||'—'}</strong><small>New family members create their own account and request access with this code.</small></div>
+      <div class="invite-code-box"><span>Family Invite Code</span><strong>${household?.invite_code||'—'}</strong><small>New family members create their own account and request access with this code.</small><div class="action-row" style="margin-top:14px"><button type="button" class="primary" data-real-share-family>📤 Share Family Quest</button></div></div>
       <h4>Pending Join Requests</h4>
       <div class="simple-list">${pending.length?pending.map(m=>`
         <div class="simple-item row"><div><strong>${escapeHtml(m.display_name)}</strong><p>Waiting for approval</p></div>
@@ -235,6 +252,7 @@
       if(action==='signout'){await signOut();return}
       if(action==='refresh'){await refreshSession();return}
       if(action==='retry-join'){show('authNoFamily');return}
+      const sh=e.target.closest('[data-real-share-family]');if(sh){await shareFamilyQuest();return}
       const a=e.target.closest('[data-real-approve]');if(a){await approve(a.dataset.realApprove);return}
       const r=e.target.closest('[data-real-reject]');if(r){await reject(r.dataset.realReject);return}
       const rn=e.target.closest('[data-real-rename]');if(rn){const n=prompt('Display name:',rn.dataset.realName||'');if(n&&n.trim())await manageMember(rn.dataset.realRename,'rename',n.trim());return}
