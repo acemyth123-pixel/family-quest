@@ -158,6 +158,38 @@
     if(error){show('authNoFamily',errText(error));return}
     await route();
   }
+  async function requestPasswordReset(){
+    const email=$a('#signInEmail').value.trim();
+    if(!email){msg('Enter your email address first, then tap Forgot password.');$a('#signInEmail').focus();return}
+    msg('Sending password reset email…');
+    const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:'https://acemyth123-pixel.github.io/family-quest/'});
+    if(error){show('authSignedOut',errText(error));return}
+    show('authSignedOut','If an account exists for that email, a password reset link has been sent. Check your inbox and spam folder.');
+    $a('#signInEmail').value=email;
+  }
+  function showPasswordRecovery(){
+    show('authSignedOut');
+    $a('#signInForm').hidden=true;$a('#signUpForm').hidden=true;
+    let box=document.getElementById('passwordRecoveryForm');
+    if(!box){
+      box=document.createElement('form');box.id='passwordRecoveryForm';box.className='auth-form';
+      box.innerHTML='<h2>Set New Password</h2><p class="muted">Choose a new password for your Family Quest account.</p><label>New Password<input id="recoveryPassword" type="password" autocomplete="new-password" minlength="6" required></label><label>Confirm Password<input id="recoveryPassword2" type="password" autocomplete="new-password" minlength="6" required></label><button class="primary" type="submit">Update Password</button>';
+      $a('#authSignedOut').appendChild(box);
+      box.addEventListener('submit',async e=>{
+        e.preventDefault();
+        const p=$a('#recoveryPassword').value,p2=$a('#recoveryPassword2').value;
+        if(p!==p2){msg('Passwords do not match.');return}
+        msg('Updating password…');
+        const {error}=await client.auth.updateUser({password:p});
+        if(error){msg(errText(error));return}
+        await client.auth.signOut({scope:'local'});
+        session=null;api.realSession=false;box.remove();
+        $a('#signInForm').hidden=false;$a('#signUpForm').hidden=true;
+        show('authSignedOut','Password updated. Sign in with your new password.');
+      });
+    }
+    box.hidden=false;
+  }
   async function signOut(){
     await client.auth.signOut({scope:'local'});
     session=null;profile=null;household=null;api.realSession=false;startedApp=false;
@@ -238,6 +270,7 @@
 
   async function start(){
     $a('#signInForm').addEventListener('submit',signIn);
+    $a('#forgotPasswordButton')?.addEventListener('click',requestPasswordReset);
     $a('#signUpForm').addEventListener('submit',signUp);
     $a('#createFamilyForm').addEventListener('submit',createFamily);
     $a('#joinFamilyForm').addEventListener('submit',joinFamily);
@@ -261,8 +294,9 @@
       const de=e.target.closest('[data-real-deactivate]');if(de){await manageMember(de.dataset.realDeactivate,'deactivate');return}
       const re=e.target.closest('[data-real-reactivate]');if(re){await manageMember(re.dataset.realReactivate,'reactivate');return}
     });
-    client.auth.onAuthStateChange((_event,newSession)=>{
+    client.auth.onAuthStateChange((event,newSession)=>{
       session=newSession;api.realSession=!!newSession;
+      if(event==='PASSWORD_RECOVERY')showPasswordRecovery();
     });
     await refreshSession();
   }
