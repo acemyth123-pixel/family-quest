@@ -1,6 +1,6 @@
 /* Family Quest v0.23.10.11 — Admin organization, personal chore reminders, per-user repeat completion */
 (function(){
-  const BUILD='v0.23.11.14';
+  const BUILD='v0.23.11.15';
   window.FQAdmin02310=true;
   state.adminArea02310=state.adminArea02310||'review';
   state.adminManage02310=state.adminManage02310||'reward';
