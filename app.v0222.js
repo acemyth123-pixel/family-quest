@@ -3,11 +3,21 @@ let rewardRequestBusy=false;
 let lotteryBusyUntil=0;
 "use strict";
 
-// Shared confirmation helper. Personal Goals v0.23.11.13 relies on this global.
-window.fqConfirm=window.fqConfirm||function fqConfirm(options={}){
- const title=String(options.title||'Confirm');
- const message=String(options.message||'Are you sure?');
- return Promise.resolve(window.confirm(title+'\n\n'+message));
+// Shared Family Quest confirmation helper. Personal Goals v0.23.11.13 relies on this global.
+window.fqConfirm=function fqConfirm(options={}){
+ const d=document.getElementById('fqConfirmDialog');
+ if(!d)return Promise.resolve(window.confirm(String(options.title||'Confirm')+'\\n\\n'+String(options.message||'Are you sure?')));
+ const title=document.getElementById('fqConfirmTitle'),message=document.getElementById('fqConfirmMessage'),accept=document.getElementById('fqConfirmAccept'),cancel=document.getElementById('fqConfirmCancel');
+ title.textContent=String(options.title||'Confirm');message.textContent=String(options.message||'Are you sure?');
+ accept.textContent=String(options.confirmText||'Confirm');cancel.textContent=String(options.cancelText||'Cancel');
+ accept.className=options.danger?'bad':'primary';
+ return new Promise(resolve=>{
+  let settled=false;
+  const finish=value=>{if(settled)return;settled=true;accept.onclick=null;cancel.onclick=null;if(d.open)d.close();resolve(value)};
+  accept.onclick=()=>finish(true);cancel.onclick=()=>finish(false);
+  d.addEventListener('cancel',e=>{e.preventDefault();finish(false)},{once:true});
+  d.showModal();
+ });
 };
 const state={groceryQuest:null,
  currentUser:'',view:'home',calendarMode:'month',calendarCursor:'',achievementTarget:'',editing:null,rewardDraft:null,editingCalendarId:null,
@@ -503,7 +513,7 @@ async function loadRealGroceryQuest(){
  const {data,error}=await window.FQAuth.client.rpc('get_grocery_quest_status');if(error){console.error('Grocery quest load failed',error);return}state.groceryQuest=data||null;
 }
 async function markGroceryListReady(){const {data,error}=await window.FQAuth.client.rpc('mark_grocery_list_ready');if(error){toast(error.message);return}state.groceryQuest=data;await Promise.all([loadRealHouseholdMembers(),window.FQAuth.refreshIdentity?.()]);toast(`Grocery list ready · +${data?.listXp||10} XP`);render()}
-async function completeGroceryRun(){if(!confirm('Complete this grocery run? The Admin earns the Grocery Run XP and Purchased/Denied items will clear.'))return;const {data,error}=await window.FQAuth.client.rpc('complete_grocery_run');if(error){toast(error.message);return}await window.FQAuth.refreshIdentity?.();await Promise.all([loadRealGroceryQuest(),loadRealChores(),loadRealGroceries(),loadRealNotifications(),loadRealHouseholdMembers()]);toast(data==='approved'?'Grocery run completed.':'Grocery run submitted.');render()}
+async function completeGroceryRun(){if(!await fqConfirm({title:'Complete Grocery Run?',message:'The Admin earns the Grocery Run XP and Purchased/Denied items will clear.',confirmText:'Complete Run',cancelText:'Not Yet'}))return;const {data,error}=await window.FQAuth.client.rpc('complete_grocery_run');if(error){toast(error.message);return}await window.FQAuth.refreshIdentity?.();await Promise.all([loadRealGroceryQuest(),loadRealChores(),loadRealGroceries(),loadRealNotifications(),loadRealHouseholdMembers()]);toast(data==='approved'?'Grocery run completed.':'Grocery run submitted.');render()}
 async function saveGroceryQuestSettings(){const day=Number($('#groceryDueDay')?.value),listXp=Number($('#groceryListXp')?.value),runXp=Number($('#groceryRunXp')?.value);const {error}=await window.FQAuth.client.rpc('update_grocery_quest_settings',{p_due_weekday:day,p_list_xp:listXp,p_run_xp:runXp});if(error){toast(error.message);return}await Promise.all([loadRealGroceryQuest(),loadRealChores()]);toast('Grocery quest settings saved.');render()}
 async function realAddGrocery(item,notes){const {error}=await window.FQAuth.client.rpc('add_grocery_item',{p_item:item,p_notes:notes||null});if(error){toast(error.message);return false}await loadRealGroceries();toast(`${item} added.`);render();return true}
 async function realSetGroceryStatus(id,status){const {error}=await window.FQAuth.client.rpc('set_grocery_status',{p_id:id,p_status:status});if(error){toast(error.message);return}await Promise.all([loadRealGroceries(),loadRealNotifications()]);toast(`Grocery item: ${status}`);render()}
@@ -515,7 +525,7 @@ async function loadRealNotifications(){
 }
 async function realMarkNotificationRead(id){const {error}=await window.FQAuth.client.rpc('mark_notification_read',{p_id:id});if(error){toast(error.message);return}await loadRealNotifications();render()}
 async function realClearNotifications(){
- if(!confirm('Clear all notifications from your inbox?'))return;
+ if(!await fqConfirm({title:'Clear Inbox?',message:'This will remove all notifications from your inbox.',confirmText:'Clear Inbox',cancelText:'Keep Notifications',danger:true}))return;
  const {data,error}=await window.FQAuth.client.rpc('clear_my_notifications');
  if(error){toast(error.message);return}
  await loadRealNotifications();toast(`Inbox cleared${Number(data)>0?` · ${data} removed`:''}.`);render();
