@@ -72,17 +72,14 @@
     if(typeof populateUsers==='function')populateUsers();
     checkAutomaticSeasonReset();
     startedApp=true;
-    if(window.FQLoaders?.members)await window.FQLoaders.members();
-    if(window.FQLoaders?.chores)await window.FQLoaders.chores();
-    await refreshIdentity();
-    if(window.FQLoaders?.cosmetics)await window.FQLoaders.cosmetics();
-    if(window.FQLoaders?.achievements)await window.FQLoaders.achievements();
-    if(window.FQLoaders?.rewards)await window.FQLoaders.rewards();
-    if(window.FQLoaders?.calendar)await window.FQLoaders.calendar();
-    if(window.FQLoaders?.groceries)await window.FQLoaders.groceries();
-    if(window.FQLoaders?.notifications)await window.FQLoaders.notifications();
-    if(window.FQLoaders?.requests)await window.FQLoaders.requests();
-    if(window.FQLoaders?.xpMultipliers)await window.FQLoaders.xpMultipliers();
+    render();
+    const startupLoaders=['members','chores','cosmetics','achievements','rewards','calendar','groceries','notifications','requests','xpMultipliers','personalGoals'];
+    for(const key of startupLoaders){
+      const loader=window.FQLoaders?.[key];
+      if(!loader)continue;
+      try{await loader()}catch(e){console.error('Family Quest startup loader failed:',key,e);}
+    }
+    try{await refreshIdentity()}catch(e){console.error('Family Quest identity refresh failed:',e);}
     render();
   }
   async function route(){
