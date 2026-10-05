@@ -324,7 +324,7 @@ async function loadRealHouseholdMembers(){
  if(!(window.FQAuth?.realSession&&window.FQAuth?.profile?.household_id))return;
  const c=window.FQAuth.client,p=window.FQAuth.profile;
  const [{data,error},{data:stats,error:statsError},{data:life,error:lifeError}]=await Promise.all([
-   c.from('profiles').select('user_id,display_name,role,active,title,selected_sprite_id,selected_confetti_id,selected_background_id').eq('household_id',p.household_id).eq('membership_status','active'),
+   c.from('profiles').select('user_id,display_name,role,active,title,selected_sprite_id,selected_confetti_id,selected_background_id').eq('household_id',p.household_id).eq('membership_status','active').eq('active',true),
    c.from('season_stats').select('user_id,season_xp,reward_points,current_streak,best_streak').eq('household_id',p.household_id).eq('season_year',state.seasonYear),
    c.from('lifetime_stats').select('user_id,lifetime_xp')
  ]);
